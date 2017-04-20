@@ -1,5 +1,7 @@
 package com.skyline.json.staticjson;
 
+import com.google.gson.stream.JsonReader;
+
 import java.util.List;
 
 /**
@@ -18,5 +20,11 @@ public interface StaticJsonConverter {
      * @return
      */
     Object convert2Object(String json);
+
+    /**
+     * @param jsonReader
+     * @return
+     */
+    Object convertJsonReader2Object(JsonReader jsonReader);
 
 }

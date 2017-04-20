@@ -59,7 +59,7 @@ public class ConverterGeneratorTest {
         toMap.put(from.getId() + "", from);
         toMap.put(to.getId() + "", to);
         //message.setToMap(toMap);
-        Long[] toArray = new Long[2];
+        long[] toArray = new long[2];
         toArray[0] = from.getId();
         toArray[1] = to.getId();
         message.setToArray(toArray);
@@ -73,11 +73,11 @@ public class ConverterGeneratorTest {
         long t3 = System.nanoTime();
         System.out.println((double) (t2 - t1) / (t3 - t2));
 
-         t1 = System.nanoTime();
+        t1 = System.nanoTime();
         System.out.println(gson.toJson(message));
-         t2 = System.nanoTime();
+        t2 = System.nanoTime();
         System.out.println(staticJsonConverter.convert2Json(message));
-         t3 = System.nanoTime();
+        t3 = System.nanoTime();
         System.out.println((double) (t2 - t1) / (t3 - t2));
 
         System.out.println(gson.toJson(message));
@@ -93,20 +93,15 @@ public class ConverterGeneratorTest {
         System.out.println((double) (t2 - t1) / (t3 - t2));
 
         String json =
-                "{\"id\":100,\"id1\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"name\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"name\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";
-         t1 = System.nanoTime();
-        System.out.println(gson.fromJson(json, Message.class));
-         t2 = System.nanoTime();
-         System.out.println(Message.fromJson(json));
-//        System.out.println(staticJsonConverter.convert2Object(json));
-//        JsonReader jsonReader =new JsonReader(new StringReader(json));
-//        jsonReader.beginObject();
-//        while(jsonReader.hasNext()){
-//           System.out.println(jsonReader.nextName());
-//            System.out.println(jsonReader.nextString());
-//        }
-//        jsonReader.endObject();
-         t3 = System.nanoTime();
+                "{\"id\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"name\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"name\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";
+        Message m1 = null;
+        Message m2 = null;
+        t1 = System.nanoTime();
+        m1 = gson.fromJson(json, Message.class);
+        t2 = System.nanoTime();
+        m2 = (Message) staticJsonConverter.convert2Object(json);
+        t3 = System.nanoTime();
+        System.out.println(m1.equals(m2));
         System.out.println((double) (t2 - t1) / (t3 - t2));
 
     }

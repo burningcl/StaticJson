@@ -1,22 +1,27 @@
 #*
-if (toElement != null && !toElement.isJsonNull()) {
-    JsonArray toArray = toElement.getAsJsonArray();
-    message.to = new ArrayList<User>();
-    for (int i = 0; i < toArray.size(); i++) {
-        User item = null;
-
-        message.to.add(item);
-    }
+if (!(jsonToken.equals(JsonToken.BEGIN_ARRAY))) {
+    throw new TypeNotMatchedException("to", jsonToken.name(), "List<User>");
 }
+instance.to = new ArrayList<>();
+jsonReader.beginArray();
+while (jsonReader.hasNext()) {
+    User user = null;
+    JsonToken subToken = jsonReader.peek();
+
+    instance.to.add(user);
+}
+jsonReader.endArray();
 *#
 
-com.google.gson.JsonElement ${localVarName} = ${jsonParamName};
-if (${localVarName} != null && !${localVarName}.isJsonNull()) {
-    com.google.gson.JsonArray ${jsonArrayName} = ${localVarName}.getAsJsonArray();
-    ${instanceFieldName} = new ${iterableTypeName}();
-    for (int ${indexName} = 0; ${indexName} < ${jsonArrayName}.size(); ${indexName}++) {
-        ${itemType} ${itemName} = null;
-        ${valueSetter}
-        ${instanceFieldName}.add(${itemName});
-    }
+if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_ARRAY))) {
+    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "${varType}");
 }
+${varName} = new ${varType}();
+jsonReader.beginArray();
+while (jsonReader.hasNext()) {
+    ${itemType} ${itemName} = null;
+    com.google.gson.stream.JsonToken ${subTokenName} = jsonReader.peek();
+    ${valueSetter}
+    ${varName}.add(${itemName});
+}
+jsonReader.endArray();

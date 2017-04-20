@@ -1,10 +1,25 @@
 
-public java.lang.Object convert2Object(java.lang.String json) {
-    com.google.gson.JsonElement jsonElement = com.skyline.json.staticjson.util.GsonUtil.jsonParser.parse(json);
-    com.google.gson.JsonObject rootJsonObject = jsonElement.getAsJsonObject();
-    ${instanceType} instance = new ${instanceType}();
-    #foreach ($codeLine in $codeLines)
-    ${codeLine}
-    #end
-    return (java.lang.Object)instance;
+public java.lang.Object convertJsonReader2Object(com.google.gson.stream.JsonReader jsonReader) {
+    ${varType} instance = new ${varType}();
+    jsonReader.beginObject();
+
+
+    while (jsonReader.hasNext()) {
+        String key = jsonReader.nextName();
+        com.google.gson.stream.JsonToken jsonToken = jsonReader.peek();
+
+        if (jsonToken.equals(com.google.gson.stream.JsonToken.NULL)) {
+            jsonReader.nextNull();
+            continue;
+        }
+
+        #foreach ($codeLine in $codeLines)
+        ${codeLine}
+        #end
+
+        jsonReader.skipValue();
+    }
+    jsonReader.endObject();
+
+    return instance;
 }

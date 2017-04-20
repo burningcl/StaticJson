@@ -38,14 +38,14 @@ public class PrimitiveUtil {
     };
 
     public static String[] JSON_GET_METHOD = {
-            "getAsByte",
-            "getAsShort",
-            "getAsInt",
-            "getAsLong",
-            "getAsFloat",
-            "getAsDouble",
-            "getAsBoolean",
-            "getAsCharacter"};
+            "nextInt",
+            "nextInt",
+            "nextInt",
+            "nextLong",
+            "nextDouble",
+            "nextDouble",
+            "nextBoolean",
+            "nextInt"};
 
     static {
         PRIMITIVE_DATA_TYPE_MAP = new HashMap<String, Integer>();
@@ -69,7 +69,7 @@ public class PrimitiveUtil {
      * @param ctClass
      * @return
      */
-    public static int getPrimitiveType(CtClass ctClass) {
+    public static int getPrimitiveIndex(CtClass ctClass) {
         String className = ctClass.getName();
         Integer index = PRIMITIVE_DATA_TYPE_MAP.get(className);
         if (index != null) {

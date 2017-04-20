@@ -2,6 +2,7 @@ package com.skyline.json.staticjson;
 
 import com.skyline.json.staticjson.deserialize.DeserializeMethodGenerator;
 import com.skyline.json.staticjson.serialize.SerializeMethodGenerator;
+import com.skyline.json.staticjson.util.ClassPoolHelper;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -58,6 +59,7 @@ public class ConverterGenerator {
             converterClass = ctClass.makeNestedClass(nestedClassName, true);
         }
         this.addInterface(converterClass);
+        converterClass.setSuperclass(ClassPoolHelper.getClassPool().get(BaseStaticJsonConverter.class.getName()));
 
         SerializeMethodGenerator serializeMethodGenerator = new SerializeMethodGenerator(this);
         CtMethod serializeMethod = serializeMethodGenerator.gen(ctClass, converterClass);

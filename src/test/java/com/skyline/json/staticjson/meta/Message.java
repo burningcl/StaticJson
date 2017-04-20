@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.skyline.json.staticjson.StaticJsonConverter;
 import com.skyline.json.staticjson.annotation.JsonField;
+import com.skyline.json.staticjson.exception.TypeNotMatchedException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,13 +34,7 @@ public class Message {
 
     private List<User> to;
 
-    //private List<List<User>> toList;
-
-    // private Map<String, User> toMap;
-
-    private Object toArray;
-
-//    private long[][] toMatrix;
+    private long[] toArray;
 
     public long getId() {
         return id;
@@ -101,49 +96,36 @@ public class Message {
 //        return toArray;
 //    }
 
-    public void setToArray(Long[] toArray) {
+    public void setToArray(long[] toArray) {
         this.toArray = toArray;
     }
 
 
-    public static Message fromJson(String json) throws IOException {
-        JsonReader r = new JsonReader(new StringReader(json));
-        r.beginObject();
-        Message m = new Message();
-        while (r.hasNext()) {
-            String name = r.nextName();
-            //System.out.println(name);
-            switch (name) {
-                case "id":
-                    m.id = r.nextLong();
-                    break;
-                case "deleted":
-                    m.deleted = r.nextBoolean();
-                    break;
-                case "subject":
-                    m.subject = r.nextString();
-                    break;
-                case "content":
-                    m.content = r.nextString();
-                    break;
-                case "from":
-                    m.from = User.fromJson(r);
-                    break;
-                case "to":
-                    m.to = User.fromJsonArray(r);
-                    break;
-                case "toArray":
-                    r.beginArray();
-                    while (r.hasNext()) {
-                        r.nextInt();
-                    }
-                    r.endArray();
-                    break;
-                    default:
-                       r.skipValue();
-            }
-        }
-        r.endObject();
-        return m;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Message message = (Message) o;
+
+        if (id != message.id) return false;
+       // if (!deleted.equals(message.deleted)) return false;
+        if (!subject.equals(message.subject)) return false;
+        if (!content.equals(message.content)) return false;
+        if (!from.equals(message.from)) return false;
+        if (!to.equals(message.to)) return false;
+        return Arrays.equals(toArray, message.toArray);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + deleted.hashCode();
+        result = 31 * result + subject.hashCode();
+        result = 31 * result + content.hashCode();
+        result = 31 * result + from.hashCode();
+        result = 31 * result + to.hashCode();
+        result = 31 * result + Arrays.hashCode(toArray);
+        return result;
     }
 }

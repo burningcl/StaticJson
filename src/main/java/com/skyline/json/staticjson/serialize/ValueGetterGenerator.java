@@ -139,7 +139,7 @@ public class ValueGetterGenerator {
     public String genIterableValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String paramName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length <= 0) {
             LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
-            throw new TypeMissException("paramName's typeArguments is missing!");
+            throw new TypeMissException(paramName + "'s typeArguments is missing!");
         }
         String elementTypeName = typeArguments[0].getType().toString();
         CtClass ctClass = null;
@@ -183,7 +183,7 @@ public class ValueGetterGenerator {
     public String genMapValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String paramName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length != 2) {
             LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
-            throw new TypeMissException("paramName's typeArguments is missing, or typeArguments length is not 2!");
+            throw new TypeMissException(paramName + "'s typeArguments is missing, or typeArguments length is not 2!");
         }
         String keyTypeName = typeArguments[0].getType().toString();
         String valueTypeName = typeArguments[1].getType().toString();

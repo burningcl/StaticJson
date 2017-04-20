@@ -1,5 +1,8 @@
 package com.skyline.json.staticjson.util;
 
+import javassist.CtClass;
+import javassist.bytecode.SignatureAttribute;
+
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -159,4 +162,5 @@ public class GenUtils {
         }
         return isSuperclass(test.getSuperclass(), target);
     }
+
 }

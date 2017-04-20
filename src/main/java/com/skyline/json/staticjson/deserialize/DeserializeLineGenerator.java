@@ -83,14 +83,12 @@ public class DeserializeLineGenerator {
 
         CtClass fieldClass = field.getType();
 
-        String jsonElementName = "jsonElement" + ValueSetterGenerator.getIndexValue();
-        String valueSetter = valueSetterGenerator.gen(fieldClass, "instance." + field.getName(), jsonElementName, signatureAttribute);
+        String valueSetter = valueSetterGenerator.gen(fieldClass, "instance." + field.getName(), "jsonToken", signatureAttribute);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("deserialize_line.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("fieldName", jsonFieldName);
-        ctx.put("jsonElementName", jsonElementName);
         ctx.put("valueSetter", valueSetter);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);

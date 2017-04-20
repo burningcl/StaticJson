@@ -88,14 +88,25 @@ public class User {
         return m;
     }
 
-    public static List<User> fromJsonArray(JsonReader r) throws IOException {
-        r.beginArray();
-        List<User> list = new ArrayList<User>();
-        while (r.hasNext()) {
-            list.add(fromJson(r));
-        }
-        r.endArray();
-        return list;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (id != user.id) return false;
+        if (age != user.age) return false;
+        if (!name.equals(user.name)) return false;
+        return gender == user.gender;
     }
 
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + name.hashCode();
+        result = 31 * result + gender.hashCode();
+        result = 31 * result + age;
+        return result;
+    }
 }

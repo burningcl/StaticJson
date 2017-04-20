@@ -61,20 +61,20 @@ public class DeserializeMethodGenerator {
         Template t = ve.getTemplate("deserialize_method.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("codeLines", codeLines);
-        ctx.put("instanceType", targetClass.getName());
+        ctx.put("varType", targetClass.getName());
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         String methodBody = sw.toString();
         LoggerHolder.logger.info(TAG, "gen, success, methodBody: \n" + methodBody);
 
-        CtMethod convert2ObjectMethod = null;
+        CtMethod convertMethod = null;
         try {
-            //如果已经存在了convert2Object方法，则直接把它删除
-            convert2ObjectMethod = converterClass.getDeclaredMethod("convert2Object");
-            converterClass.removeMethod(convert2ObjectMethod);
+            //如果已经存在了convertMethod方法，则直接把它删除
+            convertMethod = converterClass.getDeclaredMethod("convertJsonReader2Object");
+            converterClass.removeMethod(convertMethod);
         } catch (NotFoundException ignore) {
         }
-        convert2ObjectMethod = CtNewMethod.make(methodBody, converterClass);
-        return convert2ObjectMethod;
+        convertMethod = CtNewMethod.make(methodBody, converterClass);
+        return convertMethod;
     }
 }

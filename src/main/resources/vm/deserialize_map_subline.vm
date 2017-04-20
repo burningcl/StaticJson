@@ -1,17 +1,3 @@
-#*
-JsonElement toMapElement = rootJsonObject.get("toMap");
-if (toMapElement != null && !toMapElement.isJsonNull()) {
-    JsonObject toMapObject = toMapElement.getAsJsonObject();
-    Set<Map.Entry<String, JsonElement>> entrySet = toMapObject.entrySet();
-    Iterator<Map.Entry<String, JsonElement>> iterator = entrySet.iterator();
-    message.toMap = new HashMap<Long, User>();
-    while(iterator.hasNext()){
-        Map.Entry<String, JsonElement> entry = iterator.next();
-        User value = null;
-        toMap.put(entry.getKey(), value);
-    }
-}
-*#
 
 com.google.gson.JsonElement ${localVarName} = ${jsonParamName};
 if (${localVarName} != null && !${localVarName}.isJsonNull()) {
