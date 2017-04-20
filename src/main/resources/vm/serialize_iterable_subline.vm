@@ -1,20 +1,6 @@
-#*
-java.util.Iterator<User> iterator = instance.to.iterator();
-json.append("[");
-while (iterator.hasNext()) {
-
-}
-json.append("]");
-*#
-
-java.util.Iterator ${iteratorName} = ${paramName}.iterator();
-json.append("[");
-boolean ${firstFlagName} = true;
+java.util.Iterator ${iteratorName} = ${varName}.iterator();
+jsonWriter.beginArray();
 while (${iteratorName}.hasNext()) {
-    if (!${firstFlagName}) {
-        json.append(",");
-    }
-    ${firstFlagName} = false;
     ${valueGetter}
 }
-json.append("]");
+jsonWriter.endArray();

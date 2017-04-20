@@ -46,7 +46,7 @@ public class ValueGetterGenerator {
      * 生成读取值的代码
      *
      * @param ctClass
-     * @param paramName
+     * @param varName
      * @param signatureAttribute
      * @return
      * @throws NotFoundException
@@ -55,10 +55,10 @@ public class ValueGetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String gen(CtClass ctClass, String paramName, SignatureAttribute signatureAttribute) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
-        LoggerHolder.logger.debug(TAG, "gen, start, ctClass: " + ctClass.getName() + ", paramName: " + paramName + ", signatureAttribute: " + signatureAttribute);
+    public String gen(CtClass ctClass, String varName, SignatureAttribute signatureAttribute) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+        LoggerHolder.logger.debug(TAG, "gen, start, ctClass: " + ctClass.getName() + ", varName: " + varName + ", signatureAttribute: " + signatureAttribute);
         if (ctClass.isArray()) {
-            return genArrayValueGetter(ctClass, paramName);
+            return genArrayValueGetter(ctClass, varName);
         } else if (signatureAttribute != null) {
             SignatureAttribute.ClassType classType = SignatureAttribute.toClassSignature(signatureAttribute.getSignature()).getSuperClass();
             String classTypeName = classType.getName();
@@ -68,38 +68,55 @@ public class ValueGetterGenerator {
             SignatureAttribute.TypeArgument[] typeArguments = classType.getTypeArguments();
             switch (type) {
                 case TYPE_ITERABLE:
-                    return this.genIterableValueGetter(typeArguments, paramName);
+                    return this.genIterableValueGetter(typeArguments, varName);
                 case TYPE_MAP:
-                    return this.genMapValueGetter(typeArguments, paramName);
+                    return this.genMapValueGetter(typeArguments, varName);
                 default:
                     LoggerHolder.logger.warn(TAG, "gen, classType: " + classType + ", value: " + type + ", use Gson");
-                    return "json.append(com.skyline.json.staticjson.util.GsonUtil.toJson(" + paramName + "));";
+                    return "json.append(com.skyline.json.staticjson.util.GsonUtil.toJson(" + varName + "));";
             }
         } else if (PrimitiveUtil.isPrimitiveDataType(ctClass)) {
-            return "json.append(" + paramName + ");";
+            int index = PrimitiveUtil.getPrimitiveIndex(ctClass);
+            String wrappedClassName = PrimitiveUtil.WRAPPED_TYPES[index];
+            String valueMethod = valueMethod(wrappedClassName);
+            return "jsonWriter.value( "
+                    + wrappedClassName
+                    + ".valueOf("
+                    + varName
+                    +")."+ valueMethod + "());";
         } else if (PrimitiveUtil.isPrimitiveWrappedType(ctClass)) {
-            return "json.append(" + paramName + ".toString());";
+            String valueMethod = valueMethod(ctClass.getName());
+            return "jsonWriter.value(" + varName + "." + valueMethod + "());";
         } else if (StringUtil.isString(ctClass)) {
-            return "json.append(\"\\\"\"+" + paramName + "+\"\\\"\");";
+            return "jsonWriter.value(" + varName + ");";
         } else {
             if (ctClass.getName().equals(Object.class.getName())) {
                 //如果是Object，则交给Gson来处理
-                return "json.append(com.skyline.json.staticjson.util.GsonUtil.toJson(" + paramName + "));";
+                return "com.skyline.json.staticjson.util.GsonUtil.getGson().tJson(" + varName + ", jsonWriter );";
             } else {
                 if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
-                    return "json.append(\"\\\"\"+" + paramName + ".toString()+\"\\\"\");";
+                    return "jsonWriter.value(" + varName + ".toString());";
                 } else {
                     converterGenerator.gen(ctClass);
-                    return "json.append(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().convert2Json(" + paramName + "));";
+                    return "new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().write(" + varName + ", jsonWriter);";
                 }
             }
         }
+    }
 
+    private String valueMethod(String className) {
+        if (className.equals(Boolean.class.getName())) {
+            return "booleanValue";
+        } else if (className.equals(Float.class.getName()) || className.equals(Double.class.getName())) {
+            return "doubleValue";
+        } else {
+            return "longValue";
+        }
     }
 
     /**
      * @param ctClass
-     * @param paramName
+     * @param varName
      * @return
      * @throws NotFoundException
      * @throws BadBytecode
@@ -107,18 +124,17 @@ public class ValueGetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genArrayValueGetter(CtClass ctClass, String paramName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genArrayValueGetter(CtClass ctClass, String varName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         String indexName = "index" + getIndexValue();
-        String arrayName = paramName;
         CtClass componentType = ctClass.getComponentType();
-        String valueGetter = this.gen(componentType, arrayName + "[" + indexName + "]", null);
+        String valueGetter = this.gen(componentType, varName + "[" + indexName + "]", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_array_subline.vm");
         // 设置变量
         VelocityContext ctx = new VelocityContext();
         ctx.put("indexName", indexName);
-        ctx.put("arrayName", arrayName);
+        ctx.put("varName", varName);
         ctx.put("valueGetter", valueGetter);
         // 输出
         StringWriter sw = new StringWriter();
@@ -128,7 +144,7 @@ public class ValueGetterGenerator {
 
     /**
      * @param typeArguments
-     * @param paramName
+     * @param varName
      * @return
      * @throws NotFoundException
      * @throws BadBytecode
@@ -136,10 +152,10 @@ public class ValueGetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genIterableValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String paramName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genIterableValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String varName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length <= 0) {
             LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
-            throw new TypeMissException(paramName + "'s typeArguments is missing!");
+            throw new TypeMissException(varName + "'s typeArguments is missing!");
         }
         String elementTypeName = typeArguments[0].getType().toString();
         CtClass ctClass = null;
@@ -152,19 +168,14 @@ public class ValueGetterGenerator {
         elementTypeName = ctClass.getName();
 
         String iteratorName = "iterator" + getIndexValue();
-        String firstFlagName = "firstFlag" + getIndexValue();
         String valueGetter = this.gen(ctClass, "(" + elementTypeName + ")(" + iteratorName + ".next())", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_iterable_subline.vm");
-        // 设置变量
         VelocityContext ctx = new VelocityContext();
         ctx.put("iteratorName", iteratorName);
-        ctx.put("elementTypeName", elementTypeName);
-        ctx.put("firstFlagName", firstFlagName);
-        ctx.put("paramName", paramName);
+        ctx.put("varName", varName);
         ctx.put("valueGetter", valueGetter);
-        // 输出
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         return sw.toString();
@@ -172,7 +183,7 @@ public class ValueGetterGenerator {
 
     /**
      * @param typeArguments
-     * @param paramName
+     * @param varName
      * @return
      * @throws NotFoundException
      * @throws BadBytecode
@@ -180,10 +191,10 @@ public class ValueGetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genMapValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String paramName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genMapValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String varName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length != 2) {
             LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
-            throw new TypeMissException(paramName + "'s typeArguments is missing, or typeArguments length is not 2!");
+            throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 2!");
         }
         String keyTypeName = typeArguments[0].getType().toString();
         String valueTypeName = typeArguments[1].getType().toString();
@@ -195,17 +206,15 @@ public class ValueGetterGenerator {
             ctClass = ClassPoolHelper.getClassPool().get(Object.class.getName());
         }
 
-        String firstFlagName = "firstFlag" + getIndexValue();
         String iteratorName = "iterator" + getIndexValue();
-        String valueGetter = this.gen(ctClass, "(" + valueTypeName + ")(" + paramName + ".get(key))", null);
+        String valueGetter = this.gen(ctClass, "(" + valueTypeName + ")(" + varName + ".get(key))", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_map_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("keyType", keyTypeName);
         ctx.put("iteratorName", iteratorName);
-        ctx.put("firstFlagName", firstFlagName);
-        ctx.put("paramName", paramName);
+        ctx.put("varName", varName);
         ctx.put("valueGetter", valueGetter);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);

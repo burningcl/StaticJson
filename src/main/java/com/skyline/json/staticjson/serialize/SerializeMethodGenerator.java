@@ -66,15 +66,15 @@ public class SerializeMethodGenerator {
         String methodBody = sw.toString();
         LoggerHolder.logger.info(TAG, "gen, success, methodBody: \n" + methodBody);
 
-        CtMethod convert2JsonMethod = null;
+        CtMethod writeMethod = null;
         try {
-            //如果已经存在了convert2Json方法，则直接把它删除
-            convert2JsonMethod = converterClass.getDeclaredMethod("convert2Json");
-            converterClass.removeMethod(convert2JsonMethod);
+            //如果已经存在了write方法，则直接把它删除
+            writeMethod = converterClass.getDeclaredMethod("write");
+            converterClass.removeMethod(writeMethod);
         } catch (NotFoundException ignore) {
         }
-        convert2JsonMethod = CtNewMethod.make(methodBody, converterClass);
-        return convert2JsonMethod;
+        writeMethod = CtNewMethod.make(methodBody, converterClass);
+        return writeMethod;
     }
 
 

@@ -1,6 +1,7 @@
 package com.skyline.json.staticjson;
 
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import java.util.List;
 
@@ -17,9 +18,10 @@ public interface StaticJsonConverter {
 
     /**
      * @param object
+     * @param jsonWriter
      * @return
      */
-    void writer(Object object);
+    void write(Object object, JsonWriter jsonWriter);
 
     /**
      * @param json

@@ -36,6 +36,8 @@ public class Message {
 
     private long[] toArray;
 
+//    Map<String, User> toMap;
+
     public long getId() {
         return id;
     }

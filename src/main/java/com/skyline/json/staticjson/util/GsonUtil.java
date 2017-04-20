@@ -10,8 +10,6 @@ public class GsonUtil {
 
     private static Gson GSON;
 
-    public static JsonParser jsonParser = new JsonParser();
-
     public static Gson getGson() {
         if (GSON == null) {
             synchronized (GsonUtil.class) {
@@ -27,8 +25,4 @@ public class GsonUtil {
         return getGson().toJson(object);
     }
 
-//    public static <T>  T fromJson(String json, Class<T> clazz) {
-//        return getGson().fromJson(json, );
-//        getGson().
-//    }
 }

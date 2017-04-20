@@ -1,29 +1,8 @@
-#*
-if (instance.deleted != null) {
-    if (first) {
-        json.append(",");
-    }
-    json.append("\"")
-        .append("deleted")
-        .append("\":")
-        .append(instance.deleted);
-    first = false;
-}
-*#
-
 #if ($needCheckNull)
 if (instance.${fieldName} != null) {
 #end
-
-    if (!first) {
-        json.append(",");
-    }
-    json.append("\"")
-        .append("${key}")
-        .append("\":");
+    jsonWriter.name("${key}");
     ${valueGetter}
-    first = false;
-
 #if ($needCheckNull)
 }
 #end

@@ -1,19 +1,40 @@
 package com.skyline.json.staticjson;
 
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.skyline.json.staticjson.util.StringUtil;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
  * Created by chenliang on 2017/4/13.
  */
 public abstract class BaseStaticJsonConverter implements StaticJsonConverter {
 
-    /**
-     * @param json
-     * @return
-     */
+    public String convert2Json(Object object) {
+        if (object == null) {
+            return null;
+        }
+        StringWriter stringWriter = null;
+        JsonWriter jsonWriter = null;
+        try {
+            stringWriter = new StringWriter();
+            jsonWriter = new JsonWriter(stringWriter);
+            this.write(object, jsonWriter);
+        } finally {
+            try {
+                if (jsonWriter != null)
+                    jsonWriter.close();
+                if (stringWriter != null)
+                    stringWriter.close();
+            } catch (Exception ignored) {
+            }
+        }
+        return stringWriter.toString();
+    }
+
+
     public Object convert2Object(String json) {
         if (StringUtil.isBlank(json)) {
             return null;
@@ -26,8 +47,12 @@ public abstract class BaseStaticJsonConverter implements StaticJsonConverter {
             return this.read(jsonReader);
         } finally {
             try {
-                jsonReader.close();
-                stringReader.close();
+                if (stringReader != null) {
+                    jsonReader.close();
+                }
+                if (jsonReader != null) {
+                    stringReader.close();
+                }
             } catch (Exception ignored) {
             }
         }

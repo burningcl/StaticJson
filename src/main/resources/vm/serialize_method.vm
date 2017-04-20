@@ -1,27 +1,17 @@
-#*
-public String convert2Json(Message instance) {
-    if (instance == null) {
-        return null;
+
+public void write(java.lang.Object object, com.google.gson.stream.JsonWriter jsonWriter) throws java.io.IOException {
+    if(object == null){
+        jsonWriter.nullValue();
+        return;
     }
-    StringBuilder json = new StringBuilder();
-    boolean first = true;
 
-}
-*#
-
-public java.lang.String convert2Json(java.lang.Object object) {
     ${instanceType} instance = (${instanceType})object;
-    if (instance == null) {
-        return null;
-    }
-    StringBuilder json = new StringBuilder();
-    boolean first = true;
 
-    json.append("{");
+    jsonWriter.beginObject();
+
     #foreach ($codeLine in $codeLines)
     ${codeLine}
     #end
-    json.append("}");
 
-    return json.toString();
+    jsonWriter.endObject();
 }

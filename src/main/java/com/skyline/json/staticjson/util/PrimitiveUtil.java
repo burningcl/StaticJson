@@ -57,7 +57,7 @@ public class PrimitiveUtil {
     static Map<String, Integer> PRIMITIVE_WRAPPED_TYPE_MAP = null;
 
     static {
-        PRIMITIVE_WRAPPED_TYPE_MAP = new HashMap<String, Integer>();
+        PRIMITIVE_WRAPPED_TYPE_MAP = new HashMap<>();
         for (int i = 0; i < WRAPPED_TYPES.length; i++) {
             PRIMITIVE_WRAPPED_TYPE_MAP.put(WRAPPED_TYPES[i], i);
         }

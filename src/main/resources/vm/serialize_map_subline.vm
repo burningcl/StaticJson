@@ -1,44 +1,12 @@
-#*
-json.append("{");
-boolean firstFlag = true;
-for (Object key : instance.toMap.keySet()) {
-    if (firstFlag) {
-        json.append(",");
-    }
-    firstFlag = false;
-
-    json.append("\"")
-        .append(key.toString())
-        .append("\":");
-
-    }
-json.append("}");
-
-java.util.Iterator<Long> iterable = toMap.keySet().iterator();
-        while(iterable.hasNext()){
-
-        }
-*#
-
-json.append("{");
-boolean ${firstFlagName}  = true;
-java.util.Iterator ${iteratorName} =  ${paramName}.keySet().iterator();
+jsonWriter.beginObject();
+java.util.Iterator ${iteratorName} =  ${varName}.keySet().iterator();
 while(${iteratorName}.hasNext()){
-    if (!${firstFlagName} ) {
-        json.append(",");
-    }
-    ${firstFlagName} = false;
-
-    json.append("\"");
     ${keyType} key =(${keyType})${iteratorName}.next();
     if(key != null){
-        json.append(key.toString());
+        jsonWriter.value(key.toString());
     }else{
-        json.append("null");
+        jsonWriter.value("null");
     }
-    json.append("\":");
-
     ${valueGetter}
-
 }
-json.append("}");
+jsonWriter.endObject();
