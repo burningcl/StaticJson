@@ -1,14 +1,38 @@
-
-com.google.gson.JsonElement ${localVarName} = ${jsonParamName};
-if (${localVarName} != null && !${localVarName}.isJsonNull()) {
-    com.google.gson.JsonObject ${itemName} = ${localVarName}.getAsJsonObject();
-    java.util.Set ${setName} = ${itemName}.entrySet();
-    java.util.Iterator ${iteratorName} =  ${setName}.iterator();
-    ${instanceFieldName}  = new ${mapType}();
-    while(${iteratorName} .hasNext()){
-        java.util.Map.Entry ${entryName} = (java.util.Map.Entry)${iteratorName} .next();
-        ${valueType} ${valueName} = null;
-        ${valueSetter}
-        toMap.put(${entryName}.getKey().toString(), ${valueName});
-    }
+if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_OBJECT))) {
+    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
 }
+${varName} = new ${varType}();
+jsonReader.beginObject();
+while (jsonReader.hasNext()) {
+
+    ${keyType} ${keyName} = null;
+
+    com.google.gson.stream.JsonReader ${jsonReader} = jsonReader;
+    java.io.StringReader ${stringReader} = null;
+    try {
+        ${stringReader} = new java.io.StringReader(${jsonReader}.nextName());
+        jsonReader = new com.google.gson.stream.JsonReader(${stringReader});
+        com.google.gson.stream.JsonToken ${keyTokenName} = jsonReader.peek();
+        ${keySetter}
+    } finally {
+        try {
+            if (jsonReader != null) {
+                jsonReader.close();
+            }
+            if (${stringReader} != null) {
+                ${stringReader}.close();
+            }
+        } catch (Exception ignored) {
+
+        }
+    }
+    jsonReader = ${jsonReader};
+
+
+    ${valueType} ${valueName} = null;
+    com.google.gson.stream.JsonToken ${valueTokenName} = jsonReader.peek();
+    ${valueSetter}
+
+    ${varName}.put(${keyName}, ${valueName});
+}
+jsonReader.endObject();

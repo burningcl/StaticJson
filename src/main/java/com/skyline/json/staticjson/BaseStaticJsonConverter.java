@@ -4,6 +4,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.skyline.json.staticjson.util.StringUtil;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -12,7 +13,7 @@ import java.io.StringWriter;
  */
 public abstract class BaseStaticJsonConverter implements StaticJsonConverter {
 
-    public String convert2Json(Object object) {
+    public String convert2Json(Object object) throws IOException {
         if (object == null) {
             return null;
         }

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import static com.skyline.json.staticjson.util.GenUtils.TYPE_ITERABLE;
+import static com.skyline.json.staticjson.util.GenUtils.TYPE_MAP;
 
 /**
  * 生成读设值的代码
@@ -94,8 +95,8 @@ public class ValueSetterGenerator {
             switch (type) {
                 case TYPE_ITERABLE:
                     return this.genIterableValueGetter(ctClass, varName, jsonTokenName, typeArguments);
-//                case TYPE_MAP:
-//                    return this.genMapValueGetter(ctClass, instanceFieldName, jsonParamName, typeArguments);
+                case TYPE_MAP:
+                    return this.genMapValueGetter(ctClass, varName, jsonTokenName, typeArguments);
                 default:
                     LoggerHolder.logger.warn(TAG, "gen, ctClass: " + ctClass + ", value: " + type + ", use Gson");
 
@@ -113,7 +114,7 @@ public class ValueSetterGenerator {
                 return this.genEnumValueSetter(ctClass, varName, jsonTokenName);
             } else {
                 converterGenerator.gen(ctClass);
-                return varName + " = ("+ctClass.getName()+")(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().read(jsonReader));";
+                return varName + " = (" + ctClass.getName() + ")(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().read(jsonReader));";
             }
         }
     }
@@ -268,64 +269,67 @@ public class ValueSetterGenerator {
         t.merge(ctx, sw);
         return sw.toString();
     }
-//
-//    /**
-//     * @param typeArguments
-//     * @return
-//     * @throws NotFoundException
-//     * @throws BadBytecode
-//     * @throws ClassNotFoundException
-//     * @throws CannotCompileException
-//     * @throws IOException
-//     */
-//    public String genMapValueGetter(CtClass ctClass, String instanceFieldName, String jsonParamName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
-//        if (typeArguments == null || typeArguments.length != 2) {
-//            LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
-//            throw new TypeMissException("paramName's typeArguments is missing, or typeArguments length is not 2!");
-//        }
-//        SignatureAttribute.ObjectType keyType = typeArguments[0].getType();
-//        String keyTypeName = keyType.toString();
-//        if (!keyTypeName.equals(String.class.getName())) {
-//            throw new TypeNotMatchedException(instanceFieldName + ".key", keyTypeName, String.class.getName());
-//        }
-//        SignatureAttribute.ObjectType valueType = typeArguments[1].getType();
-//
-//        SignatureAttribute.TypeArgument[] subTypeArguments = null;
-//        CtClass elementTypeClass = null;
-//        if (valueType instanceof SignatureAttribute.ClassType) {
-//            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) valueType;
-//            elementTypeClass = ClassPoolHelper.getClassPool().get(classType.getName());
-//            subTypeArguments = classType.getTypeArguments();
-//        } else if (valueType instanceof SignatureAttribute.ArrayType) {
-//            //todo:
-//        }
-//        String localVarName = "localVar" + getIndexValue();
-//        String itemName = "item" + getIndexValue();
-//        String setName = "set" + getIndexValue();
-//        String iteratorName = "iterator" + getIndexValue();
-//        Class<?> mapType = GenUtils.getMapClass(Class.forName(ctClass.getName()));
-//        String mapTypeName = mapType.getName();
-//        String entryName = "entry" + getIndexValue();
-//        String valueName = "value" + getIndexValue();
-//
-//        String valueSetter = this.genImpl(elementTypeClass, valueName, entryName + ".getValue()", subTypeArguments);
-//
-//        VelocityEngine ve = VelocityHelper.getVelocityEngine();
-//        Template t = ve.getTemplate("deserialize_map_subline.vm");
-//        VelocityContext ctx = new VelocityContext();
-//        ctx.put("localVarName", localVarName);
-//        ctx.put("jsonParamName", jsonParamName);
-//        ctx.put("itemName", itemName);
-//        ctx.put("setName", setName);
-//        ctx.put("iteratorName", iteratorName);
-//        ctx.put("instanceFieldName", instanceFieldName);
-//        ctx.put("mapType", mapTypeName);
-//        ctx.put("valueType", elementTypeClass.getName());
-//        ctx.put("entryName", entryName);
-//        ctx.put("valueName", valueName);
-//        ctx.put("valueSetter", valueSetter);
-//        StringWriter sw = new StringWriter();
-//        t.merge(ctx, sw);
-//        return sw.toString();
-//    }
+
+    /**
+     * @param ctClass
+     * @param varName
+     * @param jsonTokenName
+     * @param typeArguments
+     * @return
+     * @throws NotFoundException
+     * @throws BadBytecode
+     * @throws ClassNotFoundException
+     * @throws CannotCompileException
+     * @throws IOException
+     */
+    public String genMapValueGetter(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+        if (typeArguments == null || typeArguments.length != 2) {
+            LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_MAP + ", typeArguments is missing!");
+            throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 2!");
+        }
+        SignatureAttribute.ObjectType keyType = typeArguments[0].getType();
+        String keyTypeName = keyType.toString();
+        String keyName = "key" + getIndexValue();
+        String keyTokenName = "keyToken" + getIndexValue();
+        String keySetter = this.genImpl(ClassPoolHelper.getClassPool().get(keyType.toString()), keyName, keyTokenName, getSubTypeArguments(keyType));
+
+        SignatureAttribute.ObjectType valueType = typeArguments[1].getType();
+        String valueTypeName = valueType.toString();
+        String valueName = "value" + getIndexValue();
+        String valueTokenName = "valueToken" + getIndexValue();
+        String valueSetter = this.genImpl(ClassPoolHelper.getClassPool().get(valueType.toString()), valueName, valueTokenName, getSubTypeArguments(valueType));
+
+        Class<?> mapType = GenUtils.getMapClass(Class.forName(ctClass.getName()));
+        String mapTypeName = mapType.getName();
+
+        VelocityEngine ve = VelocityHelper.getVelocityEngine();
+        Template t = ve.getTemplate("deserialize_map_subline.vm");
+        VelocityContext ctx = new VelocityContext();
+        ctx.put("jsonTokenName", jsonTokenName);
+        ctx.put("varType", mapTypeName);
+        ctx.put("varName", varName);
+        ctx.put("keyType", keyTypeName);
+        ctx.put("keyName", keyName);
+        ctx.put("keyTokenName", keyTokenName);
+        ctx.put("keyJson", "keyJson"+getIndexValue());
+        ctx.put("jsonReader", "jsonReader"+getIndexValue());
+        ctx.put("stringReader", "stringReader"+getIndexValue());
+        ctx.put("keySetter", keySetter);
+        ctx.put("valueType", valueTypeName);
+        ctx.put("valueName", valueName);
+        ctx.put("valueTokenName", valueTokenName);
+        ctx.put("valueSetter", valueSetter);
+
+        StringWriter sw = new StringWriter();
+        t.merge(ctx, sw);
+        return sw.toString();
+    }
+
+    public SignatureAttribute.TypeArgument[] getSubTypeArguments(SignatureAttribute.ObjectType type) throws NotFoundException {
+        if (type instanceof SignatureAttribute.ClassType) {
+            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
+            return classType.getTypeArguments();
+        }
+        return null;
+    }
 }

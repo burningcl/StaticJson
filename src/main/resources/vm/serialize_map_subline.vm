@@ -3,9 +3,9 @@ java.util.Iterator ${iteratorName} =  ${varName}.keySet().iterator();
 while(${iteratorName}.hasNext()){
     ${keyType} key =(${keyType})${iteratorName}.next();
     if(key != null){
-        jsonWriter.value(key.toString());
+        jsonWriter.name(key.toString());
     }else{
-        jsonWriter.value("null");
+        jsonWriter.name("null");
     }
     ${valueGetter}
 }

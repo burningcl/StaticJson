@@ -3,7 +3,7 @@ package com.skyline.json.staticjson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Created by chenliang on 2017/4/13.
@@ -14,14 +14,14 @@ public interface StaticJsonConverter {
      * @param object
      * @return
      */
-    String convert2Json(Object object);
+    String convert2Json(Object object) throws IOException;
 
     /**
      * @param object
      * @param jsonWriter
      * @return
      */
-    void write(Object object, JsonWriter jsonWriter);
+    void write(Object object, JsonWriter jsonWriter) throws IOException;
 
     /**
      * @param json
