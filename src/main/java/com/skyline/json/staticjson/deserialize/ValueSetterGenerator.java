@@ -113,7 +113,7 @@ public class ValueSetterGenerator {
                 return this.genEnumValueSetter(ctClass, varName, jsonTokenName);
             } else {
                 converterGenerator.gen(ctClass);
-                return varName + " = ("+ctClass.getName()+")(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().convertJsonReader2Object(jsonReader));";
+                return varName + " = ("+ctClass.getName()+")(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().read(jsonReader));";
             }
         }
     }

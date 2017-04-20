@@ -64,33 +64,15 @@ public class ConverterGeneratorTest {
         toArray[1] = to.getId();
         message.setToArray(toArray);
 
+        long t1, t2, t3;
         StaticJsonConverter staticJsonConverter = (StaticJsonConverter) Class.forName("com.skyline.json.staticjson.meta.Message$JsonConverter").newInstance();
         Gson gson = new Gson();
-        long t1 = System.nanoTime();
-        System.out.println(gson.toJson(message));
-        long t2 = System.nanoTime();
-        System.out.println(staticJsonConverter.convert2Json(message));
-        long t3 = System.nanoTime();
-        System.out.println((double) (t2 - t1) / (t3 - t2));
-
-        t1 = System.nanoTime();
-        System.out.println(gson.toJson(message));
-        t2 = System.nanoTime();
-        System.out.println(staticJsonConverter.convert2Json(message));
-        t3 = System.nanoTime();
-        System.out.println((double) (t2 - t1) / (t3 - t2));
-
-        System.out.println(gson.toJson(message));
-        t2 = System.nanoTime();
-        System.out.println(staticJsonConverter.convert2Json(message));
-        t3 = System.nanoTime();
-        System.out.println((double) (t2 - t1) / (t3 - t2));
-
-        System.out.println(gson.toJson(message));
-        t2 = System.nanoTime();
-        System.out.println(staticJsonConverter.convert2Json(message));
-        t3 = System.nanoTime();
-        System.out.println((double) (t2 - t1) / (t3 - t2));
+//         t1 = System.nanoTime();
+//        System.out.println(gson.toJson(message));
+//         t2 = System.nanoTime();
+//        System.out.println(staticJsonConverter.convert2Json(message));
+//         t3 = System.nanoTime();
+//        System.out.println((double) (t2 - t1) / (t3 - t2));
 
         String json =
                 "{\"id\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"name\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"name\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";

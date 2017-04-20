@@ -70,7 +70,7 @@ public class DeserializeMethodGenerator {
         CtMethod convertMethod = null;
         try {
             //如果已经存在了convertMethod方法，则直接把它删除
-            convertMethod = converterClass.getDeclaredMethod("convertJsonReader2Object");
+            convertMethod = converterClass.getDeclaredMethod("read");
             converterClass.removeMethod(convertMethod);
         } catch (NotFoundException ignore) {
         }

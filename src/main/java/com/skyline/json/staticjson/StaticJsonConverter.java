@@ -16,6 +16,12 @@ public interface StaticJsonConverter {
     String convert2Json(Object object);
 
     /**
+     * @param object
+     * @return
+     */
+    void writer(Object object);
+
+    /**
      * @param json
      * @return
      */
@@ -25,6 +31,6 @@ public interface StaticJsonConverter {
      * @param jsonReader
      * @return
      */
-    Object convertJsonReader2Object(JsonReader jsonReader);
+    Object read(JsonReader jsonReader);
 
 }

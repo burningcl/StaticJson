@@ -1,5 +1,5 @@
 
-public java.lang.Object convertJsonReader2Object(com.google.gson.stream.JsonReader jsonReader) {
+public java.lang.Object read(com.google.gson.stream.JsonReader jsonReader) {
     ${varType} instance = new ${varType}();
     jsonReader.beginObject();
 

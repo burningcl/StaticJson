@@ -23,7 +23,7 @@ public abstract class BaseStaticJsonConverter implements StaticJsonConverter {
         try {
             stringReader = new StringReader(json);
             jsonReader = new JsonReader(stringReader);
-            return this.convertJsonReader2Object(jsonReader);
+            return this.read(jsonReader);
         } finally {
             try {
                 jsonReader.close();
