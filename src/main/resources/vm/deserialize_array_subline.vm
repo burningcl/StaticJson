@@ -1,0 +1,24 @@
+#*
+JsonArray toArrayArray = toArrayElement.getAsJsonArray();
+message.toArray = new Long[toArrayArray.size()];
+for (int i = 0; i < toArrayArray.size(); i++) {
+    Long item = null;
+    item = toArrayArray.getAsLong();
+    message.toArray[i] = item;
+}
+*#
+
+com.google.gson.JsonElement ${localVarName} = ${jsonParamName};
+if (${localVarName} != null && !${localVarName}.isJsonNull()) {
+    com.google.gson.JsonArray ${jsonArrayName} = ${localVarName}.getAsJsonArray();
+    #if (!$isItemArray)
+    ${instanceFieldName} = new ${instanceFieldType}[${jsonArrayName}.size()];
+    #else
+    ${instanceFieldName} = new ${basicType}[${jsonArrayName}.size()]${typeTail};
+    #end
+    for (int ${indexName} = 0; ${indexName} < ${jsonArrayName}.size(); ${indexName}++) {
+        ${itemType} ${itemName} = null;
+        ${valueSetter}
+        ${instanceFieldName}[${indexName}] = ${itemName};
+    }
+}

@@ -1,0 +1,9 @@
+#*
+JsonElement idElement = rootJsonObject.get("id");
+if (idElement != null && !idElement.isJsonNull()) {
+    message.id = idElement.getAsInt();
+}
+*#
+
+com.google.gson.JsonElement ${jsonElementName} = rootJsonObject.get("${fieldName}");
+${valueSetter}

@@ -1,0 +1,10 @@
+
+public java.lang.Object convert2Object(java.lang.String json) {
+    com.google.gson.JsonElement jsonElement = com.skyline.json.staticjson.util.GsonUtil.jsonParser.parse(json);
+    com.google.gson.JsonObject rootJsonObject = jsonElement.getAsJsonObject();
+    ${instanceType} instance = new ${instanceType}();
+    #foreach ($codeLine in $codeLines)
+    ${codeLine}
+    #end
+    return (java.lang.Object)instance;
+}

@@ -1,0 +1,22 @@
+#*
+if (toElement != null && !toElement.isJsonNull()) {
+    JsonArray toArray = toElement.getAsJsonArray();
+    message.to = new ArrayList<User>();
+    for (int i = 0; i < toArray.size(); i++) {
+        User item = null;
+
+        message.to.add(item);
+    }
+}
+*#
+
+com.google.gson.JsonElement ${localVarName} = ${jsonParamName};
+if (${localVarName} != null && !${localVarName}.isJsonNull()) {
+    com.google.gson.JsonArray ${jsonArrayName} = ${localVarName}.getAsJsonArray();
+    ${instanceFieldName} = new ${iterableTypeName}();
+    for (int ${indexName} = 0; ${indexName} < ${jsonArrayName}.size(); ${indexName}++) {
+        ${itemType} ${itemName} = null;
+        ${valueSetter}
+        ${instanceFieldName}.add(${itemName});
+    }
+}

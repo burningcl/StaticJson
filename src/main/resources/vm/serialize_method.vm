@@ -1,0 +1,27 @@
+#*
+public String convert2Json(Message instance) {
+    if (instance == null) {
+        return null;
+    }
+    StringBuilder json = new StringBuilder();
+    boolean first = true;
+
+}
+*#
+
+public java.lang.String convert2Json(java.lang.Object object) {
+    ${instanceType} instance = (${instanceType})object;
+    if (instance == null) {
+        return null;
+    }
+    StringBuilder json = new StringBuilder();
+    boolean first = true;
+
+    json.append("{");
+    #foreach ($codeLine in $codeLines)
+    ${codeLine}
+    #end
+    json.append("}");
+
+    return json.toString();
+}

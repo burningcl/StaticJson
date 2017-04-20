@@ -1,0 +1,19 @@
+#*
+json.append("[");
+for (int i = 0; i < instance.toArray.length; i++) {
+    if (i > 0) {
+        json.append(",");
+    }
+    json.append(instance.toArray[i]);
+    }
+json.append("]");
+*#
+
+json.append("[");
+for (int ${indexName} = 0; ${indexName} < ${arrayName}.length; ${indexName}++) {
+    if (${indexName} > 0) {
+        json.append(",");
+    }
+    ${valueGetter}
+}
+json.append("]");
