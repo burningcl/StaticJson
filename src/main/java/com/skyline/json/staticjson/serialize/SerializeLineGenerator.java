@@ -78,6 +78,9 @@ public class SerializeLineGenerator {
         }
 
         JsonField jsonField = AnnotationUtil.getAnnotation4Field(field, JsonField.class);
+        if (jsonField != null && jsonField.ignored()) {
+            return "";
+        }
         String jsonFieldName = jsonField != null && !StringUtil.isBlank(jsonField.jsonName()) ?
                 jsonField.jsonName()
                 : field.getName();
