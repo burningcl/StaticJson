@@ -23,11 +23,9 @@ while (jsonReader.hasNext()) {
                 ${stringReader}.close();
             }
         } catch (Exception ignored) {
-
         }
     }
     jsonReader = ${jsonReader};
-
 
     ${valueType} ${valueName} = null;
     com.google.gson.stream.JsonToken ${valueTokenName} = jsonReader.peek();

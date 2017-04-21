@@ -88,14 +88,14 @@ public class ValueGetterGenerator {
             String valueMethod = valueMethod(ctClass.getName());
             return "jsonWriter.value(" + varName + "." + valueMethod + "());";
         } else if (StringUtil.isString(ctClass)) {
-            return "jsonWriter.value(" + varName + ");";
+            return "jsonWriter.value(" + varName + ".toString());";
         } else {
             if (ctClass.getName().equals(Object.class.getName())) {
                 //如果是Object，则交给Gson来处理
-                return "com.skyline.json.staticjson.util.GsonUtil.getGson().tJson(" + varName + ", jsonWriter );";
+                return "com.skyline.json.staticjson.util.GsonUtil.getGson().toJson(" + varName + ", Object.class, jsonWriter );";
             } else {
                 if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
-                    return "jsonWriter.value(" + varName + ".toString());";
+                    return "jsonWriter.value((" + varName + ".toString()));";
                 } else {
                     converterGenerator.gen(ctClass);
                     return "new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().write(" + varName + ", jsonWriter);";
@@ -193,7 +193,7 @@ public class ValueGetterGenerator {
      */
     public String genMapValueGetter(SignatureAttribute.TypeArgument[] typeArguments, String varName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length != 2) {
-            LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_ITERABLE + ", typeArguments is missing!");
+            LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_MAP + ", typeArguments is missing!");
             throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 2!");
         }
         String keyTypeName = typeArguments[0].getType().toString();
@@ -202,12 +202,12 @@ public class ValueGetterGenerator {
         try {
             ctClass = ClassPoolHelper.getClassPool().get(valueTypeName);
         } catch (NotFoundException e) {
-            LoggerHolder.logger.warn(TAG, "gen, type: " + TYPE_ITERABLE + ", valueTypeName: " + valueTypeName + " not found!");
+            LoggerHolder.logger.warn(TAG, "gen, type: " + TYPE_MAP + ", valueTypeName: " + valueTypeName + " not found!");
             ctClass = ClassPoolHelper.getClassPool().get(Object.class.getName());
         }
 
         String iteratorName = "iterator" + getIndexValue();
-        String valueGetter = this.gen(ctClass, "(" + valueTypeName + ")(" + varName + ".get(key))", null);
+        String valueGetter = this.gen(ctClass,   varName + ".get(key)", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_map_subline.vm");

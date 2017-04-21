@@ -4,6 +4,7 @@ import com.skyline.json.staticjson.ConverterGenerator;
 import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.exception.TypeMissException;
 import com.skyline.json.staticjson.util.*;
+import com.sun.tools.javac.tree.JCTree;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -87,16 +88,16 @@ public class ValueSetterGenerator {
     protected String genImpl(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         LoggerHolder.logger.debug(TAG, "gen, start, ctClass: " + ctClass.getName() + ", varName: " + varName + ", typeArguments: " + typeArguments);
         if (ctClass.isArray()) {
-            return genArrayValueGetter(ctClass, varName, jsonTokenName);
+            return genArrayValueSetter(ctClass, varName, jsonTokenName);
         } else if (typeArguments != null && typeArguments.length > 0) {
             String classTypeName = ctClass.getName();
             Class<?> clazz = Class.forName(classTypeName);
             int type = GenUtils.getType(clazz);
             switch (type) {
                 case TYPE_ITERABLE:
-                    return this.genIterableValueGetter(ctClass, varName, jsonTokenName, typeArguments);
+                    return this.genIterableValueSetter(ctClass, varName, jsonTokenName, typeArguments);
                 case TYPE_MAP:
-                    return this.genMapValueGetter(ctClass, varName, jsonTokenName, typeArguments);
+                    return this.genMapValueSetter(ctClass, varName, jsonTokenName, typeArguments);
                 default:
                     LoggerHolder.logger.warn(TAG, "gen, ctClass: " + ctClass + ", value: " + type + ", use Gson");
 
@@ -189,7 +190,7 @@ public class ValueSetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genArrayValueGetter(CtClass ctClass, String varName, String jsonTokenName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genArrayValueSetter(CtClass ctClass, String varName, String jsonTokenName) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
 
         String listName = "list" + getIndexValue();
         CtClass componentType = ctClass.getComponentType();
@@ -231,27 +232,19 @@ public class ValueSetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genIterableValueGetter(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genIterableValueSetter(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
 
         if (typeArguments == null || typeArguments.length != 1) {
             throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 1!");
         }
         SignatureAttribute.ObjectType objectType = typeArguments[0].getType();
-        SignatureAttribute.TypeArgument[] subTypeArguments = null;
-        CtClass elementTypeClass = null;
-        String itemType = "";
-        if (objectType instanceof SignatureAttribute.ClassType) {
-            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) objectType;
-            elementTypeClass = ClassPoolHelper.getClassPool().get(classType.getName());
-            itemType = classType.getName();
-            subTypeArguments = classType.getTypeArguments();
-        } else if (objectType instanceof SignatureAttribute.ArrayType) {
-            //todo:
-        }
+        SignatureAttribute.TypeArgument[] subTypeArguments = getSubTypeArguments(objectType);
+        String itemType = getTypeName(objectType);
+        CtClass elementTypeClass = ClassPoolHelper.getClassPool().get(itemType);
+
         Class<?> iterableType = GenUtils.getIterableClass(Class.forName(ctClass.getName()));
 
         String subTokenName = "token" + getIndexValue();
-
         String itemName = "item" + getIndexValue();
         String valueSetter = this.genImpl(elementTypeClass, itemName, subTokenName, subTypeArguments);
 
@@ -282,22 +275,22 @@ public class ValueSetterGenerator {
      * @throws CannotCompileException
      * @throws IOException
      */
-    public String genMapValueGetter(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
+    public String genMapValueSetter(CtClass ctClass, String varName, String jsonTokenName, SignatureAttribute.TypeArgument[] typeArguments) throws NotFoundException, BadBytecode, ClassNotFoundException, CannotCompileException, IOException {
         if (typeArguments == null || typeArguments.length != 2) {
             LoggerHolder.logger.warn(TAG, "gen, fail, type: " + TYPE_MAP + ", typeArguments is missing!");
             throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 2!");
         }
         SignatureAttribute.ObjectType keyType = typeArguments[0].getType();
-        String keyTypeName = keyType.toString();
+        String keyTypeName = getTypeName(keyType);
         String keyName = "key" + getIndexValue();
         String keyTokenName = "keyToken" + getIndexValue();
-        String keySetter = this.genImpl(ClassPoolHelper.getClassPool().get(keyType.toString()), keyName, keyTokenName, getSubTypeArguments(keyType));
+        String keySetter = this.genImpl(ClassPoolHelper.getClassPool().get(keyTypeName), keyName, keyTokenName, getSubTypeArguments(keyType));
 
         SignatureAttribute.ObjectType valueType = typeArguments[1].getType();
-        String valueTypeName = valueType.toString();
+        String valueTypeName = getTypeName(valueType);
         String valueName = "value" + getIndexValue();
         String valueTokenName = "valueToken" + getIndexValue();
-        String valueSetter = this.genImpl(ClassPoolHelper.getClassPool().get(valueType.toString()), valueName, valueTokenName, getSubTypeArguments(valueType));
+        String valueSetter = this.genImpl(ClassPoolHelper.getClassPool().get(valueTypeName), valueName, valueTokenName, getSubTypeArguments(valueType));
 
         Class<?> mapType = GenUtils.getMapClass(Class.forName(ctClass.getName()));
         String mapTypeName = mapType.getName();
@@ -311,9 +304,9 @@ public class ValueSetterGenerator {
         ctx.put("keyType", keyTypeName);
         ctx.put("keyName", keyName);
         ctx.put("keyTokenName", keyTokenName);
-        ctx.put("keyJson", "keyJson"+getIndexValue());
-        ctx.put("jsonReader", "jsonReader"+getIndexValue());
-        ctx.put("stringReader", "stringReader"+getIndexValue());
+        ctx.put("keyJson", "keyJson" + getIndexValue());
+        ctx.put("jsonReader", "jsonReader" + getIndexValue());
+        ctx.put("stringReader", "stringReader" + getIndexValue());
         ctx.put("keySetter", keySetter);
         ctx.put("valueType", valueTypeName);
         ctx.put("valueName", valueName);
@@ -331,5 +324,21 @@ public class ValueSetterGenerator {
             return classType.getTypeArguments();
         }
         return null;
+    }
+
+    public String getTypeName(SignatureAttribute.Type type) throws NotFoundException {
+        String typeName = null;
+        if (type instanceof SignatureAttribute.ClassType) {
+            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
+            typeName = classType.getName();
+            if (!typeName.contains(".") && classType.getDeclaringClass() != null) {
+                typeName = classType.getDeclaringClass().getName() + "$" + typeName;
+            }
+        } else if (type instanceof SignatureAttribute.ArrayType) {
+            SignatureAttribute.ArrayType arrayType = (SignatureAttribute.ArrayType) type;
+            typeName = getTypeName(arrayType.getComponentType()) + "[]";
+        }
+        LoggerHolder.logger.debug(TAG, "getTypeName, typeName: " + typeName + ", type: " + type);
+        return typeName;
     }
 }
