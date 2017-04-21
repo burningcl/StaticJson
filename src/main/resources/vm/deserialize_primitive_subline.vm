@@ -10,11 +10,7 @@ if (key.equals("id")) {
 }
 *#
 
-if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BOOLEAN) || ${jsonTokenName}.equals(com.google.gson.stream.JsonToken.NUMBER))) {
+if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BOOLEAN) || ${jsonTokenName}.equals(com.google.gson.stream.JsonToken.NUMBER) || ${jsonTokenName}.equals(com.google.gson.stream.JsonToken.STRING))) {
    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
 }
-#if ($isPrimitive)
-${varName} = (${varType})(jsonReader.${methodName}());
-#else
-${varName} = ${varType}.valueOf(jsonReader.${methodName}());
-#end
+${varName} = ${valReader};

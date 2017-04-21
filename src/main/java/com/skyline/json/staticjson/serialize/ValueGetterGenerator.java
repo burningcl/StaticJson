@@ -76,17 +76,9 @@ public class ValueGetterGenerator {
                     return "json.append(com.skyline.json.staticjson.util.GsonUtil.toJson(" + varName + "));";
             }
         } else if (PrimitiveUtil.isPrimitiveDataType(ctClass)) {
-            int index = PrimitiveUtil.getPrimitiveIndex(ctClass);
-            String wrappedClassName = PrimitiveUtil.WRAPPED_TYPES[index];
-            String valueMethod = valueMethod(wrappedClassName);
-            return "jsonWriter.value( "
-                    + wrappedClassName
-                    + ".valueOf("
-                    + varName
-                    +")."+ valueMethod + "());";
+            return "jsonWriter.value(" + primitiveValWriter(ctClass, varName, false) + ");";
         } else if (PrimitiveUtil.isPrimitiveWrappedType(ctClass)) {
-            String valueMethod = valueMethod(ctClass.getName());
-            return "jsonWriter.value(" + varName + "." + valueMethod + "());";
+            return "jsonWriter.value(" + primitiveValWriter(ctClass, varName, true) + ");";
         } else if (StringUtil.isString(ctClass)) {
             return "jsonWriter.value(" + varName + ".toString());";
         } else {
@@ -104,13 +96,25 @@ public class ValueGetterGenerator {
         }
     }
 
-    private String valueMethod(String className) {
-        if (className.equals(Boolean.class.getName())) {
-            return "booleanValue";
-        } else if (className.equals(Float.class.getName()) || className.equals(Double.class.getName())) {
-            return "doubleValue";
-        } else {
-            return "longValue";
+
+    protected String primitiveValWriter(CtClass ctClass, String varName, boolean wrapped) {
+        int index = PrimitiveUtil.getPrimitiveIndex(ctClass);
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                return wrapped ? varName + ".longValue()" : "(long)" + varName;
+            case 4:
+                return wrapped ? "Double.valueOf(" + varName + ".toString()).doubleValue()" : "Double.valueOf(Float.valueOf(" + varName + ").toString()).doubleValue()";
+            case 5:
+                return wrapped ? varName + ".doubleValue()" : varName;
+            case 6:
+                return varName;
+            case 7:
+                return wrapped ? varName + ".toString()" : "Character.valueOf(" + varName + ").toString()";
+            default:
+                return "";
         }
     }
 
@@ -207,7 +211,7 @@ public class ValueGetterGenerator {
         }
 
         String iteratorName = "iterator" + getIndexValue();
-        String valueGetter = this.gen(ctClass,   varName + ".get(key)", null);
+        String valueGetter = this.gen(ctClass, varName + ".get(key)", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_map_subline.vm");

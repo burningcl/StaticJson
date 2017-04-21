@@ -4,7 +4,6 @@ import com.skyline.json.staticjson.ConverterGenerator;
 import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.exception.TypeMissException;
 import com.skyline.json.staticjson.util.*;
-import com.sun.tools.javac.tree.JCTree;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.NotFoundException;
@@ -137,10 +136,34 @@ public class ValueSetterGenerator {
         ctx.put("varType", ctClass.getName());
         ctx.put("methodName", methodName);
         ctx.put("jsonTokenName", jsonTokenName);
-        ctx.put("isPrimitive", PrimitiveUtil.isPrimitiveDataType(ctClass));
+        ctx.put("valReader", this.primitiveValReader(ctClass, PrimitiveUtil.isPrimitiveWrappedType(ctClass)));
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         return sw.toString();
+    }
+
+    protected String primitiveValReader(CtClass ctClass, boolean wrapped) {
+        int index = PrimitiveUtil.getPrimitiveIndex(ctClass);
+        switch (index) {
+            case 0:
+                return wrapped ? "Byte.valueOf((byte)jsonReader.nextInt())" : "(byte)jsonReader.nextInt()";
+            case 1:
+                return wrapped ? "Short.valueOf((short)jsonReader.nextInt())" : "(short)jsonReader.nextInt()";
+            case 2:
+                return wrapped ? "Integer.valueOf(jsonReader.nextInt())" : "jsonReader.nextInt()";
+            case 3:
+                return wrapped ? "Long.valueOf(jsonReader.nextLong())" : "jsonReader.nextLong()";
+            case 4:
+                return wrapped ? "Float.valueOf((float)jsonReader.nextDouble())" : "(float)jsonReader.nextDouble()";
+            case 5:
+                return wrapped ? "Double.valueOf(jsonReader.nextDouble())" : "jsonReader.nextDouble()";
+            case 6:
+                return wrapped ? "Boolean.valueOf(jsonReader.nextBoolean())" : "jsonReader.nextBoolean()";
+            case 7:
+                return wrapped ? "Character.valueOf(jsonReader.nextString().charAt(0))" : "jsonReader.nextString().charAt(0)";
+            default:
+                return "";
+        }
     }
 
     /**

@@ -42,10 +42,10 @@ public class PrimitiveUtil {
             "nextInt",
             "nextInt",
             "nextLong",
-            "nextDouble",
+            "nextString",
             "nextDouble",
             "nextBoolean",
-            "nextInt"};
+            "nextString"};
 
     static {
         PRIMITIVE_DATA_TYPE_MAP = new HashMap<String, Integer>();
@@ -98,4 +98,6 @@ public class PrimitiveUtil {
     public static boolean isPrimitiveWrappedType(CtClass ctClass) {
         return PRIMITIVE_WRAPPED_TYPE_MAP.containsKey(ctClass.getName());
     }
+
+
 }
