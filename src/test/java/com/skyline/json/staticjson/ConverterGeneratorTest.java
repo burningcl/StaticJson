@@ -78,7 +78,7 @@ public class ConverterGeneratorTest {
         System.out.println((double) (t2 - t1) / (t3 - t2));
 
         String json =
-                "{\"id\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"name\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"name\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";
+                "{\"id\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"jsonName\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"jsonName\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";
         Message m1 = null;
         Message m2 = null;
         t1 = System.nanoTime();

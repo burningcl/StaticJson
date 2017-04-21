@@ -73,7 +73,7 @@ public class User {
                 case "id":
                     m.id = r.nextLong();
                     break;
-                case "name":
+                case "jsonName":
                     m.name = r.nextString();
                     break;
                 case "gender":

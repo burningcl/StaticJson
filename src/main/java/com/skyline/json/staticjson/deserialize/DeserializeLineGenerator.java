@@ -77,8 +77,8 @@ public class DeserializeLineGenerator {
         }
 
         JsonField jsonField = AnnotationUtil.getAnnotation4Field(field, JsonField.class);
-        String jsonFieldName = jsonField != null && !StringUtil.isBlank(jsonField.name()) ?
-                jsonField.name()
+        String jsonFieldName = jsonField != null && !StringUtil.isBlank(jsonField.jsonName()) ?
+                jsonField.jsonName()
                 : field.getName();
 
         CtClass fieldClass = field.getType();

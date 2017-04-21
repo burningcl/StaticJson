@@ -1,5 +1,7 @@
 package com.skyline.json.staticjson.annotation;
 
+import com.google.gson.TypeAdapter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -16,7 +18,7 @@ public @interface JsonField {
      *
      * @return
      */
-    String name() default "";
+    String jsonName() default "";
 
     /**
      * 是否在序列化过程中忽略该字段
@@ -31,4 +33,12 @@ public @interface JsonField {
      * @return
      */
     boolean deserializationIgnored() default false;
+
+    /**
+     * 如果该字段在json中与在instance中类型不一致时，
+     * 可以使用TypeAdapter来进行转换
+     *
+     * @return
+     */
+    Class<? extends TypeAdapter> typeAdapter();
 }

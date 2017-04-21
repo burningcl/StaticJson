@@ -1,17 +1,7 @@
 package com.skyline.json.staticjson.meta;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.skyline.json.staticjson.StaticJsonConverter;
 import com.skyline.json.staticjson.annotation.JsonField;
-import com.skyline.json.staticjson.exception.TypeNotMatchedException;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -23,7 +13,7 @@ public class Message {
 
     private long id;
 
-    @JsonField(name = "deletedInt")
+    @JsonField(jsonName = "deletedInt")
     private Boolean deleted;
 
     private String subject;
