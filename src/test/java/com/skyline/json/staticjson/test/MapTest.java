@@ -232,7 +232,7 @@ public class MapTest {
         TestClass t2 = gson.fromJson(json, TestClass.class);
         System.out.println(gson.toJson(t1));
         System.out.println(gson.toJson(t2));
-       // Assert.assertTrue(t1.equals(t2));
+        // Assert.assertTrue(t1.equals(t2));
     }
 
     @Test
@@ -261,6 +261,63 @@ public class MapTest {
         System.out.println(gson.toJson(t1));
         System.out.println(gson.toJson(t2));
         // Assert.assertTrue(t1.equals(t2));
+    }
+
+    @Test
+    public void test6() throws IOException {
+        TestClass t = new TestClass();
+        t.map5 = new HashMap<>();
+        for (int i = 0; i < 3; i++) {
+            List<Value> val = new ArrayList<>();
+            for (int j = 0; j <= i; j++) {
+                val.add(new Value("value" + j, j));
+            }
+            t.map5.put(i != 0 ? Long.valueOf(i) : null, val);
+        }
+        String json1 = gson.toJson(t);
+        String json2 = staticJsonConverter.convert2Json(t);
+        System.out.println(json1);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
+    }
+
+    /**
+     * 含key为null的map的反序列化
+     * Gson不支持此类反序列化
+     *
+     * @throws IOException
+     */
+    @Test
+    public void test61() throws IOException {
+        String json = "{\"map5\":{\"null\":[{\"valStr\":\"value0\",\"valLong\":0}],\"1\":[{\"valStr\":\"value0\",\"valLong\":0},{\"valStr\":\"value1\",\"valLong\":1}],\"2\":[{\"valStr\":\"value0\",\"valLong\":0},{\"valStr\":\"value1\",\"valLong\":1},{\"valStr\":\"value2\",\"valLong\":2}]}}\n";
+        TestClass t1 = (TestClass) staticJsonConverter.convert2Object(json);
+        System.out.println(gson.toJson(t1));
+    }
+
+    /**
+     * 包含value为null的map的序列化
+     *
+     * @throws IOException
+     */
+    @Test
+    public void test7() throws IOException {
+        TestClass t = new TestClass();
+        t.map5 = new HashMap<>();
+        for (int i = 0; i < 3; i++) {
+            List<Value> val = null;
+            if (i != 1) {
+                val = new ArrayList<>();
+                for (int j = 0; j <= i; j++) {
+                    val.add(new Value("value" + j, j));
+                }
+            }
+            t.map5.put(Long.valueOf(i), val);
+        }
+        String json1 = gson.toJson(t);
+        String json2 = staticJsonConverter.convert2Json(t);
+        System.out.println(json1);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
     }
 
     private void fill(Map<Integer, String> map) {

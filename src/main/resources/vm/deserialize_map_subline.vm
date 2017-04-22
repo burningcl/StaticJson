@@ -13,7 +13,9 @@ while (jsonReader.hasNext()) {
         ${stringReader} = new java.io.StringReader(${jsonReader}.nextName());
         jsonReader = new com.google.gson.stream.JsonReader(${stringReader});
         com.google.gson.stream.JsonToken ${keyTokenName} = jsonReader.peek();
-        ${keySetter}
+        if(!${keyTokenName}.equals(com.google.gson.stream.JsonToken.NULL)){
+            ${keySetter}
+        }
     } finally {
         try {
             if (jsonReader != null) {
@@ -29,7 +31,9 @@ while (jsonReader.hasNext()) {
 
     ${valueType} ${valueName} = null;
     com.google.gson.stream.JsonToken ${valueTokenName} = jsonReader.peek();
-    ${valueSetter}
+    if(!${valueTokenName}.equals(com.google.gson.stream.JsonToken.NULL)){
+        ${valueSetter}
+    }
 
     ${varName}.put(${keyName}, ${valueName});
 }
