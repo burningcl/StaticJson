@@ -9,6 +9,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 /**
+ * StaticJsonConverter基类
+ *
  * Created by chenliang on 2017/4/13.
  */
 public abstract class BaseStaticJsonConverter implements StaticJsonConverter {

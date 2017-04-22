@@ -1,7 +1,7 @@
 package com.skyline.json.staticjson.serialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.exception.TypeMissException;
 import com.skyline.json.staticjson.util.*;
 import javassist.CannotCompileException;
@@ -172,7 +172,7 @@ public class ValueGetterGenerator {
         elementTypeName = ctClass.getName();
 
         String iteratorName = "iterator" + getIndexValue();
-        String valueGetter = this.gen(ctClass, "(" + elementTypeName + ")(" + iteratorName + ".next())", null);
+        String valueGetter = this.gen(ctClass, "((" + elementTypeName + ")" + iteratorName + ".next())", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_iterable_subline.vm");

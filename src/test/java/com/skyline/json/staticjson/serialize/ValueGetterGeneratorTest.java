@@ -1,9 +1,8 @@
 package com.skyline.json.staticjson.serialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.PrintLogger;
-import com.skyline.json.staticjson.deserialize.ValueSetterGenerator;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;

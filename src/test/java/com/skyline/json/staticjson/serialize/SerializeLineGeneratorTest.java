@@ -1,20 +1,13 @@
 package com.skyline.json.staticjson.serialize;
 
-import com.google.gson.Gson;
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.PrintLogger;
-import com.skyline.json.staticjson.meta.User;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by chenliang on 2017/4/12.

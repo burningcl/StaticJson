@@ -2,8 +2,8 @@ package com.skyline.json.staticjson.test;
 
 import com.google.gson.Gson;
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.PrintLogger;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.StaticJsonConverter;
 import com.skyline.json.staticjson.annotation.JsonTarget;
 import javassist.CannotCompileException;

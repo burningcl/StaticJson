@@ -1,25 +1,13 @@
 package com.skyline.json.staticjson.deserialize;
 
-import com.google.gson.stream.JsonReader;
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
 import com.skyline.json.staticjson.PrintLogger;
-import com.skyline.json.staticjson.meta.Gender;
-import com.skyline.json.staticjson.serialize.SerializeLineGenerator;
-import com.skyline.json.staticjson.util.GsonUtil;
-import com.skyline.json.staticjson.util.ListUtil;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
-import javassist.bytecode.AttributeInfo;
-import javassist.bytecode.ConstantAttribute;
-import javassist.bytecode.SignatureAttribute;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by chenliang on 2017/4/14.

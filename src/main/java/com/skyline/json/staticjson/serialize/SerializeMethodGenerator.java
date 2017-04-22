@@ -1,7 +1,7 @@
 package com.skyline.json.staticjson.serialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.util.VelocityHelper;
 import com.skyline.json.staticjson.util.StringUtil;
 import javassist.*;

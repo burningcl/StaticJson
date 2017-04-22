@@ -16,12 +16,13 @@ jsonReader.endArray();
 if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_ARRAY))) {
     throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "${varType}");
 }
-${varName} = new ${varType}();
+${varType} ${varTmpName} = new ${varType}();
 jsonReader.beginArray();
 while (jsonReader.hasNext()) {
     ${itemType} ${itemName} = null;
     com.google.gson.stream.JsonToken ${subTokenName} = jsonReader.peek();
     ${valueSetter}
-    ${varName}.add(${itemName});
+    ${varTmpName}.add(${itemName});
 }
+${varName} = ${varTmpName};
 jsonReader.endArray();

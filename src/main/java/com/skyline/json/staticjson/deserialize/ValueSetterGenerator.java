@@ -1,7 +1,7 @@
 package com.skyline.json.staticjson.deserialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.exception.TypeMissException;
 import com.skyline.json.staticjson.util.*;
 import javassist.CannotCompileException;
@@ -278,6 +278,7 @@ public class ValueSetterGenerator {
         ctx.put("varType", iterableType.getName());
         ctx.put("varName", varName);
         ctx.put("itemType", itemType);
+        ctx.put("varTmpName", "varTmp" + getIndexValue());
         ctx.put("itemName", itemName);
         ctx.put("subTokenName", subTokenName);
         ctx.put("valueSetter", valueSetter);

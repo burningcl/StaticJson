@@ -1,21 +1,17 @@
 package com.skyline.json.staticjson;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.skyline.json.staticjson.meta.Gender;
 import com.skyline.json.staticjson.meta.Message;
 import com.skyline.json.staticjson.meta.User;
-import com.skyline.json.staticjson.serialize.SerializeLineGenerator;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.Loader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;

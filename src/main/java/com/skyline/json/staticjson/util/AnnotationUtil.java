@@ -1,12 +1,11 @@
 package com.skyline.json.staticjson.util;
 
-import com.skyline.json.staticjson.annotation.JsonField;
 import javassist.CtField;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 
 /**
+ * 注解工具类
  * Created by chenliang on 2017/4/11.
  */
 public final class AnnotationUtil {

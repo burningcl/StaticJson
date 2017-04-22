@@ -1,20 +1,19 @@
 package com.skyline.json.staticjson.util;
 
 import javassist.CtClass;
-import javassist.NotFoundException;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
+ * 基础数据类型的工具类
  * Created by chenliang on 2017/4/11.
  */
 public class PrimitiveUtil {
 
-    static Map<String, Integer> PRIMITIVE_DATA_TYPE_MAP = null;
-
+    /**
+     * 基础数据类型数组
+     */
     public static String[] TYPES = {
             "byte",
             "short",
@@ -26,6 +25,9 @@ public class PrimitiveUtil {
             "char"
     };
 
+    /**
+     * 基础数据类型的封装类型数组
+     */
     public static String[] WRAPPED_TYPES = {
             Byte.class.getName(),
             Short.class.getName(),
@@ -37,6 +39,9 @@ public class PrimitiveUtil {
             Character.class.getName()
     };
 
+    /**
+     * 读取基础数据类型value时，相对应的JsonReader的方法
+     */
     public static String[] JSON_GET_METHOD = {
             "nextInt",
             "nextInt",
@@ -46,6 +51,8 @@ public class PrimitiveUtil {
             "nextDouble",
             "nextBoolean",
             "nextString"};
+
+    static Map<String, Integer> PRIMITIVE_DATA_TYPE_MAP = null;
 
     static {
         PRIMITIVE_DATA_TYPE_MAP = new HashMap<String, Integer>();

@@ -1,16 +1,23 @@
 package com.skyline.json.staticjson.util;
 
-import javassist.CtClass;
-import javassist.bytecode.SignatureAttribute;
-
 import java.util.*;
 import java.util.concurrent.*;
 
 /**
+ * 生成工具类
  * Created by chenliang on 2017/4/13.
  */
 public class GenUtils {
 
+    /**
+     * TAG
+     */
+    private final static String TAG = "GenUtils";
+
+    /**
+     * @param targetClassName
+     * @return
+     */
     public static String getJsonConverterName(String targetClassName) {
         return targetClassName + ".JsonConverter";
     }
@@ -98,7 +105,10 @@ public class GenUtils {
      * @return
      */
     public static Class<?> getIterableClass(Class<?> clazz) {
-        return getTypedClass(clazz, TYPE_ITERABLE);
+        Class<?> retClass = getTypedClass(clazz, TYPE_ITERABLE);
+        if (retClass == null)
+            LoggerHolder.logger.error(TAG, "getIterableClass, input: " + clazz + ", ret: " + retClass, null);
+        return retClass;
     }
 
     /**
@@ -124,14 +134,23 @@ public class GenUtils {
         return null;
     }
 
+    /**
+     * 判断test这个类型是否是target类型的
+     *
+     * @param test
+     * @param target
+     * @return
+     */
     public static boolean instanceOf(final Class<?> test, final Class<?> target) {
         if (test == null) {
             return false;
+        } else if (test.equals(target)) {
+            return true;
         }
         Class[] interfaces = test.getInterfaces();
         if (interfaces != null && interfaces.length > 0) {
             for (Class<?> curTest : interfaces) {
-                if (isSuperclass(curTest, target)) {
+                if (instanceOf(curTest, target)) {
                     return true;
                 }
             }
@@ -154,6 +173,13 @@ public class GenUtils {
         return null;
     }
 
+    /**
+     * 判断test类型是否是target类型的子类
+     *
+     * @param test
+     * @param target
+     * @return
+     */
     public static boolean isSuperclass(final Class<?> test, final Class<?> target) {
         if (test == null) {
             return false;

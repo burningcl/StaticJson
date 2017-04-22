@@ -7,13 +7,13 @@ import javassist.ClassPool;
  */
 public class ClassPoolHelper {
 
-    private static ClassPool classPool;
+    private static ClassPool CLASS_POOL;
 
     public static ClassPool getClassPool() {
-        if (classPool == null) {
-            classPool = ClassPool.getDefault();
-            classPool.appendSystemPath();
+        if (CLASS_POOL == null) {
+            CLASS_POOL = ClassPool.getDefault();
+            CLASS_POOL.appendSystemPath();
         }
-        return classPool;
+        return CLASS_POOL;
     }
 }

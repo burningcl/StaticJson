@@ -4,6 +4,7 @@ package com.skyline.json.staticjson;
  * Created by chenliang on 2017/4/12.
  */
 public class PrintLogger implements Logger {
+
     public void debug(String tag, String msg) {
         System.out.println("debug: " + tag + ", " + msg);
     }

@@ -1,7 +1,7 @@
 package com.skyline.json.staticjson.deserialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
-import com.skyline.json.staticjson.LoggerHolder;
+import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.annotation.JsonField;
 import com.skyline.json.staticjson.util.AnnotationUtil;
 import com.skyline.json.staticjson.util.StringUtil;
