@@ -65,7 +65,7 @@ public class IterableTest {
             this.val2 = val2;
         }
 
-        private Item() {
+        public Item() {
 
         }
     }
@@ -191,4 +191,25 @@ public class IterableTest {
     public void test51() throws IOException {
         testDeserialization("{\"itemQueue\":[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"},{\"val1\":true,\"val2\":\"str4\"},{\"val1\":false,\"val2\":\"str5\"}]}");
     }
+
+    @Test
+    public void test6() throws IOException {
+        TestClass t = new TestClass();
+        t.characterSet = new HashSet<>();
+        for (int i = 0; i < 6; i++) {
+            t.characterSet.add((char) ('a' + i));
+        }
+        t.characterSet.add(null);
+        String json1 = gson.toJson(t);
+        System.out.println(json1);
+        String json2 = staticJsonConverter.convert2Json(t);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
+    }
+
+    @Test
+    public void test61() throws IOException {
+        testDeserialization("{\"characterSet\":[null,\"a\",\"b\",\"c\",\"d\",\"e\",\"f\"]}");
+    }
+
 }

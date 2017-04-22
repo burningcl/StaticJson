@@ -1,6 +1,11 @@
 java.util.Iterator ${iteratorName} = ${varName}.iterator();
 jsonWriter.beginArray();
 while (${iteratorName}.hasNext()) {
-    ${valueGetter}
+    ${elementTypeName} ${varNextName} = ((${elementTypeName})${iteratorName}.next());
+    if(${varNextName} == null){
+        jsonWriter.nullValue();
+    }else{
+        ${valueGetter}
+    }
 }
 jsonWriter.endArray();

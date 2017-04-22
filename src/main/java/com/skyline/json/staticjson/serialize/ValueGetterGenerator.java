@@ -165,20 +165,23 @@ public class ValueGetterGenerator {
         CtClass ctClass = null;
         try {
             ctClass = ClassPoolHelper.getClassPool().get(elementTypeName);
+            elementTypeName = ctClass.getName();
         } catch (NotFoundException e) {
             LoggerHolder.logger.warn(TAG, "gen, type: " + TYPE_ITERABLE + ", elementType: " + elementTypeName + " not found!");
             ctClass = ClassPoolHelper.getClassPool().get(Object.class.getName());
         }
-        elementTypeName = ctClass.getName();
 
         String iteratorName = "iterator" + getIndexValue();
-        String valueGetter = this.gen(ctClass, "((" + elementTypeName + ")" + iteratorName + ".next())", null);
+        String varNextName = "varNext" + getIndexValue();
+        String valueGetter = this.gen(ctClass, varNextName, null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_iterable_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("iteratorName", iteratorName);
         ctx.put("varName", varName);
+        ctx.put("elementTypeName", elementTypeName);
+        ctx.put("varNextName", varNextName);
         ctx.put("valueGetter", valueGetter);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);

@@ -21,7 +21,11 @@ jsonReader.beginArray();
 while (jsonReader.hasNext()) {
     ${itemType} ${itemName} = null;
     com.google.gson.stream.JsonToken ${subTokenName} = jsonReader.peek();
-    ${valueSetter}
+    if(!${subTokenName}.equals(com.google.gson.stream.JsonToken.NULL)){
+        ${valueSetter}
+    }else{
+        jsonReader.nextNull();
+    }
     ${varTmpName}.add(${itemName});
 }
 ${varName} = ${varTmpName};
