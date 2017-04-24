@@ -10,20 +10,20 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
  */
 public class VelocityHelper {
 
-    static VelocityEngine ve;
+    static VelocityEngine VE;
 
     /**
      *
      * @return
      */
     public static VelocityEngine getVelocityEngine() {
-        if (ve == null) {
-            ve = new VelocityEngine();
+        if (VE == null) {
+            VE = new VelocityEngine();
             String resourceLoader = ConverterGenerator.class.getClassLoader().getResource("vm").getPath();
-            ve.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, resourceLoader);
-            ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-            ve.init();
+            VE.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, resourceLoader);
+            VE.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+            VE.init();
         }
-        return ve;
+        return VE;
     }
 }

@@ -1,6 +1,8 @@
 package com.skyline.json.staticjson.deserialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
+import com.skyline.json.staticjson.TypeAdapterCodeGenerator;
+import com.skyline.json.staticjson.TypeAdapterNull;
 import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.annotation.JsonField;
 import com.skyline.json.staticjson.util.AnnotationUtil;
@@ -86,7 +88,13 @@ public class DeserializeLineGenerator {
 
         CtClass fieldClass = field.getType();
 
-        String valueSetter = valueSetterGenerator.gen(fieldClass, "instance." + field.getName(), "jsonToken", signatureAttribute);
+        String valueSetter;
+        String varName = "instance." + field.getName();
+        if (jsonField != null && jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
+            valueSetter = TypeAdapterCodeGenerator.genDeserializationCode(jsonField.typeAdapter(), fieldClass, varName);
+        } else {
+            valueSetter = valueSetterGenerator.gen(fieldClass, varName, "jsonToken", signatureAttribute);
+        }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("deserialize_line.vm");

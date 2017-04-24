@@ -162,6 +162,7 @@ public class ValueSetterGenerator {
             case 7:
                 return wrapped ? "Character.valueOf(jsonReader.nextString().charAt(0))" : "jsonReader.nextString().charAt(0)";
             default:
+                LoggerHolder.logger.error(TAG, "primitiveValReader, fail, is this a PrimitiveDataType, ctClass: " + ctClass, null);
                 return "";
         }
     }

@@ -1,0 +1,1 @@
+new ${typeAdapterName}().toJson(jsonWriter, (${varClass})(${varName}));

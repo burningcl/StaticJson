@@ -1,0 +1,1 @@
+${varName} = (${varType})(new ${typeAdapterName}().fromJson(jsonReader));

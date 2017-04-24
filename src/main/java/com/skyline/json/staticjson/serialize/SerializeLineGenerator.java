@@ -1,6 +1,8 @@
 package com.skyline.json.staticjson.serialize;
 
 import com.skyline.json.staticjson.ConverterGenerator;
+import com.skyline.json.staticjson.TypeAdapterCodeGenerator;
+import com.skyline.json.staticjson.TypeAdapterNull;
 import com.skyline.json.staticjson.util.LoggerHolder;
 import com.skyline.json.staticjson.util.VelocityHelper;
 import com.skyline.json.staticjson.annotation.JsonField;
@@ -79,6 +81,7 @@ public class SerializeLineGenerator {
 
         JsonField jsonField = AnnotationUtil.getAnnotation4Field(field, JsonField.class);
         if (jsonField != null && jsonField.ignored()) {
+            //该Field已经被确定忽略
             return "";
         }
         String jsonFieldName = jsonField != null && !StringUtil.isBlank(jsonField.jsonName()) ?
@@ -92,7 +95,13 @@ public class SerializeLineGenerator {
         if (signatureAttribute != null) {
             LoggerHolder.logger.debug(TAG, "genValueGetter, signatureAttribute: " + signatureAttribute.getSignature());
         }
-        String valueGetter = valueGetterGenerator.gen(fieldClass, "instance." + field.getName(), signatureAttribute);
+        String valueGetter;
+        String varName = "instance." + field.getName();
+        if (jsonField != null && jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
+            valueGetter = TypeAdapterCodeGenerator.genSerializationCode(jsonField.typeAdapter(), fieldClass, varName);
+        } else {
+            valueGetter = valueGetterGenerator.gen(fieldClass, varName, signatureAttribute);
+        }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_line.vm");

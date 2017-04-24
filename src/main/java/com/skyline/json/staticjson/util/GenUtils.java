@@ -1,5 +1,7 @@
 package com.skyline.json.staticjson.util;
 
+import com.google.gson.TypeAdapter;
+
 import java.util.*;
 import java.util.concurrent.*;
 

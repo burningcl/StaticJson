@@ -135,12 +135,10 @@ public class ValueGetterGenerator {
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_array_subline.vm");
-        // 设置变量
         VelocityContext ctx = new VelocityContext();
         ctx.put("indexName", indexName);
         ctx.put("varName", varName);
         ctx.put("valueGetter", valueGetter);
-        // 输出
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         return sw.toString();
