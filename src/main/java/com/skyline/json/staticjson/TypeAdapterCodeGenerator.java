@@ -17,6 +17,12 @@ public class TypeAdapterCodeGenerator {
 
     static final String TAG = "TypeAdapterCodeGenerator";
 
+    /**
+     * @param adapterClass
+     * @param varClass
+     * @param varName
+     * @return
+     */
     public static String genSerializationCode(Class<? extends TypeAdapter> adapterClass, CtClass varClass, String varName) {
         if (adapterClass == null) {
             LoggerHolder.logger.warn(TAG, "genSerializationCode, fail, adapterClass is null");
@@ -33,6 +39,12 @@ public class TypeAdapterCodeGenerator {
         return sw.toString();
     }
 
+    /**
+     * @param adapterClass
+     * @param varClass
+     * @param varName
+     * @return
+     */
     public static String genDeserializationCode(Class<? extends TypeAdapter> adapterClass, CtClass varClass, String varName) {
         if (adapterClass == null) {
             LoggerHolder.logger.warn(TAG, "genDeserializationCode, fail, adapterClass is null");

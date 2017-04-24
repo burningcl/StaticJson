@@ -97,7 +97,7 @@ public class SerializeLineGenerator {
         }
         String valueGetter;
         String varName = "instance." + field.getName();
-        if (jsonField != null && jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
+        if (jsonField != null && !jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
             valueGetter = TypeAdapterCodeGenerator.genSerializationCode(jsonField.typeAdapter(), fieldClass, varName);
         } else {
             valueGetter = valueGetterGenerator.gen(fieldClass, varName, signatureAttribute);

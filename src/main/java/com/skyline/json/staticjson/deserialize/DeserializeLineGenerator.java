@@ -90,7 +90,7 @@ public class DeserializeLineGenerator {
 
         String valueSetter;
         String varName = "instance." + field.getName();
-        if (jsonField != null && jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
+        if (jsonField != null && !jsonField.typeAdapter().equals(TypeAdapterNull.class)) {
             valueSetter = TypeAdapterCodeGenerator.genDeserializationCode(jsonField.typeAdapter(), fieldClass, varName);
         } else {
             valueSetter = valueSetterGenerator.gen(fieldClass, varName, "jsonToken", signatureAttribute);
