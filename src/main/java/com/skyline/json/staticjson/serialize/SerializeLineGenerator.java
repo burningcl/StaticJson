@@ -45,7 +45,7 @@ public class SerializeLineGenerator {
 
     public SerializeLineGenerator(ConverterGenerator converterGenerator) {
         this.converterGenerator = converterGenerator;
-        valueGetterGenerator = new ValueGetterGenerator(converterGenerator);
+        this.valueGetterGenerator = new ValueGetterGenerator(converterGenerator);
     }
 
     /**

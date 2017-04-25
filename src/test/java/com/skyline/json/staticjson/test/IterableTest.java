@@ -52,6 +52,10 @@ public class IterableTest {
 
         Queue<Item> itemQueue;
 
+        List<Queue<Item>> itemQueues;
+
+        List<Item[]> itemArrays;
+
     }
 
     public static class Item {
@@ -210,6 +214,68 @@ public class IterableTest {
     @Test
     public void test61() throws IOException {
         testDeserialization("{\"characterSet\":[null,\"a\",\"b\",\"c\",\"d\",\"e\",\"f\"]}");
+    }
+
+    @Test
+    public void test7() throws IOException {
+        TestClass t = new TestClass();
+        t.itemQueues = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            ArrayBlockingQueue itemQueue = new ArrayBlockingQueue<Item>(4);
+            for (int j = 0; j < 4; j++) {
+                itemQueue.add(new Item(j % 2 == 0, "str" + j));
+            }
+            t.itemQueues.add(itemQueue);
+        }
+        t.itemQueues.add(null);
+        String json1 = gson.toJson(t);
+        System.out.println(json1);
+        String json2 = staticJsonConverter.convert2Json(t);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
+    }
+
+    @Test
+    public void test71() throws IOException {
+        String json = "{\"itemQueues\":[[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],null]}";
+        TestClass t1 = gson.fromJson(json, TestClass.class);
+        TestClass t2 = (TestClass) staticJsonConverter.convert2Object(json);
+        String json1 = gson.toJson(t1);
+        System.out.println(json1);
+        String json2 = staticJsonConverter.convert2Json(t2);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
+    }
+
+    @Test
+    public void test8() throws IOException {
+        TestClass t = new TestClass();
+        t.itemArrays = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Item[] itemArray = new Item[4];
+            for (int j = 0; j < 4; j++) {
+                itemArray[j] = new Item(j % 2 == 0, "str" + j);
+            }
+            t.itemArrays.add(itemArray);
+        }
+        t.itemArrays.add(null);
+        String json1 = gson.toJson(t);
+        System.out.println(json1);
+        String json2 = staticJsonConverter.convert2Json(t);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
+    }
+
+    @Test
+    public void test81() throws IOException {
+        String json = "{\"itemArrays\":[[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],[{\"val1\":true,\"val2\":\"str0\"},{\"val1\":false,\"val2\":\"str1\"},{\"val1\":true,\"val2\":\"str2\"},{\"val1\":false,\"val2\":\"str3\"}],null]}";
+        TestClass t1 = gson.fromJson(json, TestClass.class);
+        TestClass t2 = (TestClass) staticJsonConverter.convert2Object(json);
+        String json1 = gson.toJson(t1);
+        System.out.println(json1);
+        String json2 = staticJsonConverter.convert2Json(t2);
+        System.out.println(json2);
+        Assert.assertEquals(json1, json2);
     }
 
 }

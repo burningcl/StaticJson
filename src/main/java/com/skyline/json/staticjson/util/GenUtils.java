@@ -1,6 +1,8 @@
 package com.skyline.json.staticjson.util;
 
 import com.google.gson.TypeAdapter;
+import javassist.NotFoundException;
+import javassist.bytecode.SignatureAttribute;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -189,6 +191,42 @@ public class GenUtils {
             return true;
         }
         return isSuperclass(test.getSuperclass(), target);
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     * @throws NotFoundException
+     */
+    public static SignatureAttribute.TypeArgument[] getSubTypeArguments(SignatureAttribute.ObjectType type) throws NotFoundException {
+        if (type instanceof SignatureAttribute.ClassType) {
+            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
+            return classType.getTypeArguments();
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     * @throws NotFoundException
+     */
+    public static String getTypeName(SignatureAttribute.Type type) throws NotFoundException {
+        String typeName = null;
+        if (type instanceof SignatureAttribute.ClassType) {
+            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
+            typeName = classType.getName();
+            if (!typeName.contains(".") && classType.getDeclaringClass() != null) {
+                typeName = classType.getDeclaringClass().getName() + "$" + typeName;
+            }
+        } else if (type instanceof SignatureAttribute.ArrayType) {
+            SignatureAttribute.ArrayType arrayType = (SignatureAttribute.ArrayType) type;
+            typeName = getTypeName(arrayType.getComponentType()) + "[]";
+        }
+        LoggerHolder.logger.debug(TAG, "getTypeName, typeName: " + typeName + ", type: " + type);
+        return typeName;
     }
 
 }

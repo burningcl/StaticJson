@@ -98,8 +98,7 @@ public class ValueSetterGenerator {
                 case TYPE_MAP:
                     return this.genMapValueSetter(ctClass, varName, jsonTokenName, typeArguments);
                 default:
-                    LoggerHolder.logger.warn(TAG, "gen, ctClass: " + ctClass + ", value: " + type + ", use Gson");
-
+                    LoggerHolder.logger.warn(TAG, "gen, ctClass: " + ctClass + ", value: " + type + ", unknown type");
                     return "";
             }
         } else if (PrimitiveUtil.isPrimitiveDataType(ctClass) || PrimitiveUtil.isPrimitiveWrappedType(ctClass)) {
@@ -262,8 +261,8 @@ public class ValueSetterGenerator {
             throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 1!");
         }
         SignatureAttribute.ObjectType objectType = typeArguments[0].getType();
-        SignatureAttribute.TypeArgument[] subTypeArguments = getSubTypeArguments(objectType);
-        String itemType = getTypeName(objectType);
+        SignatureAttribute.TypeArgument[] subTypeArguments = GenUtils.getSubTypeArguments(objectType);
+        String itemType = GenUtils.getTypeName(objectType);
         CtClass elementTypeClass = ClassPoolHelper.getClassPool().get(itemType);
 
         Class<?> iterableType = GenUtils.getIterableClass(Class.forName(ctClass.getName()));
@@ -306,16 +305,16 @@ public class ValueSetterGenerator {
             throw new TypeMissException(varName + "'s typeArguments is missing, or typeArguments length is not 2!");
         }
         SignatureAttribute.ObjectType keyType = typeArguments[0].getType();
-        String keyTypeName = getTypeName(keyType);
+        String keyTypeName = GenUtils.getTypeName(keyType);
         String keyName = "key" + getIndexValue();
         String keyTokenName = "keyToken" + getIndexValue();
-        String keySetter = this.genImpl(ClassPoolHelper.getClassPool().get(keyTypeName), keyName, keyTokenName, getSubTypeArguments(keyType));
+        String keySetter = this.genImpl(ClassPoolHelper.getClassPool().get(keyTypeName), keyName, keyTokenName, GenUtils.getSubTypeArguments(keyType));
 
         SignatureAttribute.ObjectType valueType = typeArguments[1].getType();
-        String valueTypeName = getTypeName(valueType);
+        String valueTypeName = GenUtils.getTypeName(valueType);
         String valueName = "value" + getIndexValue();
         String valueTokenName = "valueToken" + getIndexValue();
-        String valueSetter = this.genImpl(ClassPoolHelper.getClassPool().get(valueTypeName), valueName, valueTokenName, getSubTypeArguments(valueType));
+        String valueSetter = this.genImpl(ClassPoolHelper.getClassPool().get(valueTypeName), valueName, valueTokenName, GenUtils.getSubTypeArguments(valueType));
 
         Class<?> mapType = GenUtils.getMapClass(Class.forName(ctClass.getName()));
         String mapTypeName = mapType.getName();
@@ -343,27 +342,5 @@ public class ValueSetterGenerator {
         return sw.toString();
     }
 
-    public SignatureAttribute.TypeArgument[] getSubTypeArguments(SignatureAttribute.ObjectType type) throws NotFoundException {
-        if (type instanceof SignatureAttribute.ClassType) {
-            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
-            return classType.getTypeArguments();
-        }
-        return null;
-    }
 
-    public String getTypeName(SignatureAttribute.Type type) throws NotFoundException {
-        String typeName = null;
-        if (type instanceof SignatureAttribute.ClassType) {
-            SignatureAttribute.ClassType classType = (SignatureAttribute.ClassType) type;
-            typeName = classType.getName();
-            if (!typeName.contains(".") && classType.getDeclaringClass() != null) {
-                typeName = classType.getDeclaringClass().getName() + "$" + typeName;
-            }
-        } else if (type instanceof SignatureAttribute.ArrayType) {
-            SignatureAttribute.ArrayType arrayType = (SignatureAttribute.ArrayType) type;
-            typeName = getTypeName(arrayType.getComponentType()) + "[]";
-        }
-        LoggerHolder.logger.debug(TAG, "getTypeName, typeName: " + typeName + ", type: " + type);
-        return typeName;
-    }
 }

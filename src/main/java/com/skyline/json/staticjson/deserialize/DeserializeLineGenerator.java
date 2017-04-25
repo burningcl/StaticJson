@@ -44,7 +44,7 @@ public class DeserializeLineGenerator {
 
     public DeserializeLineGenerator(ConverterGenerator converterGenerator) {
         this.converterGenerator = converterGenerator;
-        valueSetterGenerator = new ValueSetterGenerator(converterGenerator);
+        this.valueSetterGenerator = new ValueSetterGenerator(converterGenerator);
     }
 
     /**
