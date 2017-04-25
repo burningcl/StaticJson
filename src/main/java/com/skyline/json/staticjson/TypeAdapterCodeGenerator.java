@@ -1,7 +1,10 @@
 package com.skyline.json.staticjson;
 
 import com.google.gson.TypeAdapter;
+import com.skyline.json.staticjson.deserialize.ValueSetterGenerator;
+import com.skyline.json.staticjson.serialize.ValueGetterGenerator;
 import com.skyline.json.staticjson.util.LoggerHolder;
+import com.skyline.json.staticjson.util.PrimitiveUtil;
 import com.skyline.json.staticjson.util.VelocityHelper;
 import javassist.CtClass;
 import org.apache.velocity.Template;
@@ -28,12 +31,21 @@ public class TypeAdapterCodeGenerator {
             LoggerHolder.logger.warn(TAG, "genSerializationCode, fail, adapterClass is null");
             return "";
         }
+        boolean isPrimitiveDataType = false;
+        String wrappedClassName = varClass.getName();
+        if (PrimitiveUtil.isPrimitiveDataType(varClass)) {
+            isPrimitiveDataType = true;
+            wrappedClassName = PrimitiveUtil.WRAPPED_TYPES[PrimitiveUtil.getPrimitiveIndex(varClass)];
+        }
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("serialize_typeadapter.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("typeAdapterName", adapterClass.getName());
         ctx.put("varType", varClass.getName());
         ctx.put("varName", varName);
+        ctx.put("isPrimitive", isPrimitiveDataType);
+        ctx.put("varTmpName", "varTmp" + ValueGetterGenerator.getIndexValue());
+        ctx.put("varWrappedType", wrappedClassName);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         return sw.toString();
@@ -50,12 +62,25 @@ public class TypeAdapterCodeGenerator {
             LoggerHolder.logger.warn(TAG, "genDeserializationCode, fail, adapterClass is null");
             return "";
         }
+        boolean isPrimitiveDataType = false;
+        String wrappedClassName = varClass.getName();
+        String getValueMethod = "";
+        if (PrimitiveUtil.isPrimitiveDataType(varClass)) {
+            isPrimitiveDataType = true;
+            int index = PrimitiveUtil.getPrimitiveIndex(varClass);
+            wrappedClassName = PrimitiveUtil.WRAPPED_TYPES[index];
+            getValueMethod = PrimitiveUtil.WRAPPED_GET_METHOD[index];
+        }
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("deserialize_typeadapter.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("typeAdapterName", adapterClass.getName());
         ctx.put("varType", varClass.getName());
         ctx.put("varName", varName);
+        ctx.put("isPrimitive", isPrimitiveDataType);
+        ctx.put("varTmpName", "varTmp" + ValueSetterGenerator.getIndexValue());
+        ctx.put("varWrappedType", wrappedClassName);
+        ctx.put("getValueMethod", getValueMethod);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         return sw.toString();

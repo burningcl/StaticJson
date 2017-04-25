@@ -52,6 +52,19 @@ public class PrimitiveUtil {
             "nextBoolean",
             "nextString"};
 
+    /**
+     * 读取基础数据类型value时，相对应的封装类型的方法
+     */
+    public static String[] WRAPPED_GET_METHOD = {
+            "byteValue",
+            "shortValue",
+            "intValue",
+            "longValue",
+            "floatValue",
+            "doubleValue",
+            "booleanValue",
+            "charValue"};
+
     static Map<String, Integer> PRIMITIVE_DATA_TYPE_MAP = null;
 
     static {

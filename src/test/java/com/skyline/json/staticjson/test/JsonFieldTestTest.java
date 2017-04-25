@@ -28,6 +28,7 @@ import java.io.IOException;
 public class JsonFieldTestTest {
 
     static StaticJsonConverter staticJsonConverter;
+    static StaticJsonConverter staticJsonConverter2;
     static Gson gson;
 
     @BeforeClass
@@ -37,8 +38,11 @@ public class JsonFieldTestTest {
         pool.appendSystemPath();
         CtClass ctClass = pool.get(JsonFieldTestTest.TestClass.class.getName());
         new ConverterGenerator().gen(ctClass);
+        CtClass ctClass2 = pool.get(JsonFieldTestTest.TestClass2.class.getName());
+        new ConverterGenerator().gen(ctClass2);
 
         staticJsonConverter = (StaticJsonConverter) Class.forName(JsonFieldTestTest.TestClass.class.getName() + "$JsonConverter").newInstance();
+        staticJsonConverter2 = (StaticJsonConverter) Class.forName(JsonFieldTestTest.TestClass2.class.getName() + "$JsonConverter").newInstance();
         gson = new Gson();
     }
 
@@ -56,6 +60,14 @@ public class JsonFieldTestTest {
 
 //        @JsonField(typeAdapter = DeletedTypeAdapter.class)
 //        boolean deletedPrimitive;
+
+    }
+
+    @JsonTarget
+    public static class TestClass2 {
+
+        @JsonField(typeAdapter = DeletedTypeAdapter.class)
+        Boolean deleted;
 
     }
 
@@ -131,8 +143,8 @@ public class JsonFieldTestTest {
     @Test
     public void testTypeAdapter2() throws IOException {
         String json = "{\"deleted\":0}";
-        TestClass t = (TestClass) staticJsonConverter.convert2Object(json);
-        String json1 = staticJsonConverter.convert2Json(t);
+        TestClass2 t = (TestClass2) staticJsonConverter2.convert2Object(json);
+        String json1 = staticJsonConverter2.convert2Json(t);
         System.out.println(json1);
         Assert.assertEquals(json, json1);
     }
@@ -141,8 +153,8 @@ public class JsonFieldTestTest {
     @Test
     public void testTypeAdapter3() throws IOException {
         String json = "{\"deleted\":1}";
-        TestClass t = (TestClass) staticJsonConverter.convert2Object(json);
-        String json1 = staticJsonConverter.convert2Json(t);
+        TestClass2 t = (TestClass2) staticJsonConverter2.convert2Object(json);
+        String json1 = staticJsonConverter2.convert2Json(t);
         System.out.println(json1);
         Assert.assertEquals(json, json1);
     }

@@ -1,1 +1,6 @@
-${varName} = (${varType})(new ${typeAdapterName}().read(jsonReader));
+${varWrappedType} ${varTmpName} = (${varWrappedType})(new ${typeAdapterName}().read(jsonReader));
+#if ($isPrimitive)
+${varName} = ${varTmpName}.${getValueMethod}();
+#else
+${varName} = ${varTmpName};
+#end
