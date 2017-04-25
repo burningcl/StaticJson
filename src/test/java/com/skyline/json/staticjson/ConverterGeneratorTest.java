@@ -2,10 +2,13 @@ package com.skyline.json.staticjson;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import com.skyline.json.staticjson.core.PrintLogger;
+import com.skyline.json.staticjson.core.StaticJsonConverter;
+import com.skyline.json.staticjson.generator.ConverterGenerator;
 import com.skyline.json.staticjson.meta.Gender;
 import com.skyline.json.staticjson.meta.Message;
 import com.skyline.json.staticjson.meta.User;
-import com.skyline.json.staticjson.util.LoggerHolder;
+import com.skyline.json.staticjson.core.util.LoggerHolder;
 import javassist.ClassPool;
 import javassist.CtClass;
 import org.junit.BeforeClass;

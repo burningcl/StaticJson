@@ -14,7 +14,7 @@ jsonReader.endArray();
 *#
 
 if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_ARRAY))) {
-    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "${varType}");
+    throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "${varType}");
 }
 ${varType} ${varTmpName} = new ${varType}();
 jsonReader.beginArray();

@@ -1,4 +1,4 @@
 if (!${jsonTokenName}.equals(com.google.gson.stream.JsonToken.STRING)) {
-   throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "java.lang.String");
+   throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "java.lang.String");
 }
 ${varName} = jsonReader.nextString();

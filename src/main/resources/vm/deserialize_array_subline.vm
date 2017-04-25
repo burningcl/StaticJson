@@ -1,9 +1,5 @@
-#*
-
-*#
-
 if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_ARRAY))) {
-    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "java.util.List");
+    throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("to", ${jsonTokenName}.name(), "java.util.List");
 }
 java.util.List ${listName} = new java.util.ArrayList();
 jsonReader.beginArray();
@@ -14,4 +10,4 @@ while (jsonReader.hasNext()) {
     ${listName}.add(${itemName});
 }
 jsonReader.endArray();
-${varName} = (${varType})com.skyline.json.staticjson.util.ListUtil.toArray(${listName}, ${varType}.class );
+${varName} = (${varType})com.skyline.json.staticjson.core.util.ListUtil.toArray(${listName}, ${varType}.class );

@@ -1,6 +1,6 @@
 package com.skyline.json.staticjson.meta;
 
-import com.skyline.json.staticjson.annotation.JsonField;
+import com.skyline.json.staticjson.core.annotation.JsonField;
 
 import java.util.*;
 

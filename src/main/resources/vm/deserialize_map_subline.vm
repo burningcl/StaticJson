@@ -1,5 +1,5 @@
 if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_OBJECT))) {
-    throw new com.skyline.json.staticjson.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
+    throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
 }
 ${varName} = new ${varType}();
 jsonReader.beginObject();
