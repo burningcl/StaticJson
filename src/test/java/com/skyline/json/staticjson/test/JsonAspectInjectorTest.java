@@ -46,12 +46,13 @@ public class JsonAspectInjectorTest {
         }
         String[] str1 = new String[n];
         String[] str2 = new String[n];
+        //System.gc();
         long tt1 = System.nanoTime();
         for (int i = 0; i < n; i++) {
             str2[i] = gson.toJson(objs[i]);
         }
         long tt2 = System.nanoTime();
-        System.gc();
+        //System.gc();
         long tt3 = System.nanoTime();
         for (int i = 0; i < n; i++) {
             str1[i] = JsonUtil.toJson(objs[i]);
@@ -63,34 +64,35 @@ public class JsonAspectInjectorTest {
         System.out.println((double) (tt2 - tt1) / (tt4 - tt3));
 
 
-        int[] arrays = new int[n];
-        long t1 = System.nanoTime();
-        for (int i = 0; i < n; i++) {
-            arrays[i] = objs[i].anInt;
-        }
-        long t2 = System.nanoTime();
-        Field field = PrimitiveTest.TestClass.class.getDeclaredField("anInt");
-        field.setAccessible(true);
-        System.gc();
-        long t3 = System.nanoTime();
-        for (int i = 0; i < n; i++) {
-            arrays[i] = field.getInt(objs[i]);
-        }
-        long t4 = System.nanoTime();
-        System.out.println((double) (t4 - t3) / (t2 - t1));
+//        int[] arrays = new int[n];
+//        long t1 = System.nanoTime();
+//        for (int i = 0; i < n; i++) {
+//            arrays[i] = objs[i].anInt;
+//        }
+//        long t2 = System.nanoTime();
+//        Field field = PrimitiveTest.TestClass.class.getDeclaredField("anInt");
+//        field.setAccessible(true);
+//        System.gc();
+//        long t3 = System.nanoTime();
+//        for (int i = 0; i < n; i++) {
+//            arrays[i] = field.getInt(objs[i]);
+//        }
+//        long t4 = System.nanoTime();
+//        System.out.println((double) (t4 - t3) / (t2 - t1));
     }
 
     @Test
     public void testDeserialization() throws NoSuchFieldException, IllegalAccessException {
         String json = "{\"aByte1\":0,\"anInt\":0,\"aShort\":0,\"aLong\":0,\"aFloat\":0.0,\"aDouble\":0.0,\"aChar\":\"\\u0000\",\"aBoolean\":false}";
         int n = 1000;
+        //System.gc();
         long tt1 = System.nanoTime();
         PrimitiveTest.TestClass t1 = null;
         for (int i = 0; i < n; i++) {
             t1 = gson.fromJson(json, PrimitiveTest.TestClass.class);
         }
         long tt2 = System.nanoTime();
-        System.gc();
+        //System.gc();
         long tt3 = System.nanoTime();
         PrimitiveTest.TestClass t2 = null;
         for (int i = 0; i < n; i++) {
