@@ -48,6 +48,8 @@ public class JsonAspectInjector {
         }
         if (jsonAspect.action().equals(JsonAspect.Action.SERIALIZATION)) {
             return this.injectSerialization(ctMethod);
+        } else if (jsonAspect.action().equals(JsonAspect.Action.DESERIALIZATION)) {
+            return this.injectDeserialization(ctMethod);
         }
         return false;
     }
@@ -69,11 +71,43 @@ public class JsonAspectInjector {
         if (argIndex < 0) {
             return false;
         }
-        LoggerHolder.logger.debug(TAG, "inject, ctMethod: " + ctMethod.getName() + ", argIndex: " + argIndex);
+        LoggerHolder.logger.debug(TAG, "injectSerialization, ctMethod: " + ctMethod.getName() + ", argIndex: " + argIndex);
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
         Template t = ve.getTemplate("inject_serialization.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("argIndex", argIndex + 1);
+        StringWriter sw = new StringWriter();
+        t.merge(ctx, sw);
+        String insertBefore = sw.toString();
+        ctMethod.insertBefore(insertBefore);
+
+        return true;
+    }
+
+    protected boolean injectDeserialization(CtMethod ctMethod) throws ClassNotFoundException, CannotCompileException {
+        Object[][] annotations = ctMethod.getParameterAnnotations();
+        int jsonIndex = -1;
+        int classIndex = -1;
+        for (int i = 0; i < annotations.length; i++) {
+            Object[] ans = annotations[i];
+            JsonAspectParam jsonAspectParam = AnnotationUtil.getAnnotation(ans, JsonAspectParam.class);
+            if (jsonAspectParam != null) {
+                if (jsonAspectParam.type().equals(JsonAspectParam.Type.JSON)) {
+                    jsonIndex = i;
+                } else if (jsonAspectParam.type().equals(JsonAspectParam.Type.OBJECT_CLASS)) {
+                    classIndex = i;
+                }
+            }
+        }
+        if (jsonIndex < 0 || classIndex < 0) {
+            return false;
+        }
+        LoggerHolder.logger.debug(TAG, "injectDeserialization, ctMethod: " + ctMethod.getName() + ", jsonIndex: " + jsonIndex + ", classIndex: " + classIndex);
+        VelocityEngine ve = VelocityHelper.getVelocityEngine();
+        Template t = ve.getTemplate("inject_deserialization.vm");
+        VelocityContext ctx = new VelocityContext();
+        ctx.put("jsonIndex", jsonIndex + 1);
+        ctx.put("classIndex", classIndex + 1);
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         String insertBefore = sw.toString();

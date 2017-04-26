@@ -30,4 +30,12 @@ public class JsonUtil {
         return gson.toJson(object);
     }
 
+    @JsonAspect(action = JsonAspect.Action.DESERIALIZATION)
+    public static <T> T fromJson(
+            @JsonAspectParam(type = JsonAspectParam.Type.JSON) String json,
+            @JsonAspectParam(type = JsonAspectParam.Type.OBJECT_CLASS) Class<T> clazz
+    ) {
+        return (T) gson.fromJson(json, clazz);
+    }
+
 }

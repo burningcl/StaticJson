@@ -33,15 +33,13 @@ public class JsonAspectInjectorTest {
         ConverterGenerator converter = new ConverterGenerator();
         converter.gen(ctClass);
         staticJsonConverter = (StaticJsonConverter) Class.forName(PrimitiveTest.TestClass.class.getName() + "$JsonConverter").newInstance();
-        //converter.inject(pool.get(JsonUtil.class.getName()));
+        // converter.inject(pool.get(JsonUtil.class.getName()));
         gson = new Gson();
     }
 
     @Test
-    public void test() throws NoSuchFieldException, IllegalAccessException {
-
-
-        int n = 10;
+    public void testSerialization() throws NoSuchFieldException, IllegalAccessException {
+        int n = 1000;
         PrimitiveTest.TestClass[] objs = new PrimitiveTest.TestClass[n];
         for (int i = 0; i < n; i++) {
             objs[i] = new PrimitiveTest.TestClass();
@@ -59,10 +57,10 @@ public class JsonAspectInjectorTest {
             str1[i] = JsonUtil.toJson(objs[i]);
         }
         long tt4 = System.nanoTime();
-
+        System.out.println(JsonUtil.toJson(objs[0]));
         System.out.println((tt2 - tt1));
         System.out.println((tt4 - tt3));
-        System.out.println((double) (tt2 - tt1) /(tt4 - tt3) );
+        System.out.println((double) (tt2 - tt1) / (tt4 - tt3));
 
 
         int[] arrays = new int[n];
@@ -80,5 +78,31 @@ public class JsonAspectInjectorTest {
         }
         long t4 = System.nanoTime();
         System.out.println((double) (t4 - t3) / (t2 - t1));
+    }
+
+    @Test
+    public void testDeserialization() throws NoSuchFieldException, IllegalAccessException {
+        String json = "{\"aByte1\":0,\"anInt\":0,\"aShort\":0,\"aLong\":0,\"aFloat\":0.0,\"aDouble\":0.0,\"aChar\":\"\\u0000\",\"aBoolean\":false}";
+        int n = 1000;
+        long tt1 = System.nanoTime();
+        PrimitiveTest.TestClass t1 = null;
+        for (int i = 0; i < n; i++) {
+            t1 = gson.fromJson(json, PrimitiveTest.TestClass.class);
+        }
+        long tt2 = System.nanoTime();
+        System.gc();
+        long tt3 = System.nanoTime();
+        PrimitiveTest.TestClass t2 = null;
+        for (int i = 0; i < n; i++) {
+            t2 = JsonUtil.fromJson(json, PrimitiveTest.TestClass.class);
+        }
+        long tt4 = System.nanoTime();
+
+        System.out.println((tt2 - tt1));
+        System.out.println((tt4 - tt3));
+        System.out.println((double) (tt2 - tt1) / (tt4 - tt3));
+
+        System.out.println(JsonUtil.toJson(t1));
+        System.out.println(JsonUtil.toJson(t2));
     }
 }
