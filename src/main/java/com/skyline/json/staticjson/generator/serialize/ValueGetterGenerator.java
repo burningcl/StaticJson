@@ -127,15 +127,15 @@ public class ValueGetterGenerator {
             case 1:
             case 2:
             case 3:
-                return wrapped ? varName + ".longValue()" : "(long)" + varName;
+                return wrapped ? varName : "(long)" + varName;
             case 4:
-                return wrapped ? "Double.valueOf(" + varName + ".toString()).doubleValue()" : "Double.valueOf(Float.valueOf(" + varName + ").toString()).doubleValue()";
+                return wrapped ? varName : "Double.valueOf(String.valueOf(" + varName + "))";
             case 5:
-                return wrapped ? varName + ".doubleValue()" : varName;
+                return varName;
             case 6:
                 return varName;
             case 7:
-                return wrapped ? varName + ".toString()" : "Character.valueOf(" + varName + ").toString()";
+                return "String.valueOf(" + varName + ")";
             default:
                 return "";
         }

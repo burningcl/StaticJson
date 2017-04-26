@@ -97,15 +97,15 @@ public class User {
 
         if (id != user.id) return false;
         if (age != user.age) return false;
-        if (!name.equals(user.name)) return false;
+        if (name != null ? !name.equals(user.name) : user.name != null) return false;
         return gender == user.gender;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + name.hashCode();
-        result = 31 * result + gender.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + age;
         return result;
     }

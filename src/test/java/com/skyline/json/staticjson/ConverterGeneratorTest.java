@@ -69,24 +69,28 @@ public class ConverterGeneratorTest {
         long t1, t2, t3;
         StaticJsonConverter staticJsonConverter = (StaticJsonConverter) Class.forName("com.skyline.json.staticjson.meta.Message$JsonConverter").newInstance();
         Gson gson = new Gson();
-        t1 = System.nanoTime();
-        System.out.println(gson.toJson(message));
-        t2 = System.nanoTime();
-        System.out.println(staticJsonConverter.convert2Json(message));
-        t3 = System.nanoTime();
-        System.out.println((double) (t2 - t1) / (t3 - t2));
+        for(int i=0;i<10;i++) {
+            t1 = System.nanoTime();
+            System.out.println(gson.toJson(message));
+            t2 = System.nanoTime();
+            System.out.println(staticJsonConverter.convert2Json(message));
+            t3 = System.nanoTime();
+            System.out.println((double) (t2 - t1) / (t3 - t2));
+        }
 
         String json =
                 "{\"id\":100,\"subject\":\"this is the subject!\",\"content\":\"this is the content!\",\"from\":{\"id\":101,\"jsonName\":\"UserFrom\",\"gender\":\"FEMALE\",\"age\":20},\"to\":[{\"id\":102,\"jsonName\":\"UserTo\",\"gender\":\"MALE\",\"age\":21}],\"toArray\":[101,102]}";
         Message m1 = null;
         Message m2 = null;
-        t1 = System.nanoTime();
-        m1 = gson.fromJson(json, Message.class);
-        t2 = System.nanoTime();
-        m2 = (Message) staticJsonConverter.convert2Object(json);
-        t3 = System.nanoTime();
-        System.out.println(m1.equals(m2));
-        System.out.println((double) (t2 - t1) / (t3 - t2));
+        for(int i=0;i<10;i++) {
+            t1 = System.nanoTime();
+            m1 = gson.fromJson(json, Message.class);
+            t2 = System.nanoTime();
+            m2 = (Message) staticJsonConverter.convert2Object(json);
+            t3 = System.nanoTime();
+            System.out.println(m1.equals(m2));
+            System.out.println((double) (t2 - t1) / (t3 - t2));
+        }
 
         StringWriter stringWriter = null;
         JsonWriter jsonWriter = null;

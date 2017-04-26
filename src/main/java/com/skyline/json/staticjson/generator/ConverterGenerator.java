@@ -22,18 +22,20 @@ import java.util.Set;
  */
 public class ConverterGenerator {
 
-    private String outPath = null;
+    private String outputPath = null;
 
     /**
      * 已经处理的CtClass集合，以防止处理为一个CtClass生成JsonConverter
      */
     Set<CtClass> processedSet = new HashSet<CtClass>();
 
-    private String getOutPath() {
-        if (outPath == null) {
-            outPath = ConverterGenerator.class.getClassLoader().getResource("").getPath();
+    JsonAspectInjector injector = new JsonAspectInjector();
+
+    private String getOutputPath() {
+        if (outputPath == null) {
+            outputPath = ConverterGenerator.class.getClassLoader().getResource("").getPath();
         }
-        return outPath;
+        return outputPath;
     }
 
     /**
@@ -75,8 +77,14 @@ public class ConverterGenerator {
 
         this.addInterface(ctClass, StaticJsonObject.class.getName());
 
-        ctClass.writeFile(getOutPath());
-        converterClass.writeFile(getOutPath());
+        ctClass.writeFile(getOutputPath());
+        converterClass.writeFile(getOutputPath());
+    }
+
+    public void inject(CtClass ctClass) throws CannotCompileException, ClassNotFoundException, IOException {
+        if (injector.inject(ctClass)) {
+            ctClass.writeFile(getOutputPath());
+        }
     }
 
     /**

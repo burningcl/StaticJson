@@ -94,8 +94,16 @@ public class PrimitiveTest {
         t1.aBoolean = true;
         t1.aBoolean1 = false;
 
-        System.out.println(staticJsonConverter.convert2Json(t1));
-        System.out.println(gson.toJson(t1));
+        for (int i = 0; i < 3; i++) {
+            long tt1 = System.nanoTime();
+            String json1 = staticJsonConverter.convert2Json(t1);
+            long tt2 = System.nanoTime();
+            String json2 = gson.toJson(t1);
+            long tt3 = System.nanoTime();
+            System.out.println(json1);
+            System.out.println(json2);
+            System.out.println((double) (tt3 - tt2) / (tt2 - tt1));
+        }
     }
 
     @Test

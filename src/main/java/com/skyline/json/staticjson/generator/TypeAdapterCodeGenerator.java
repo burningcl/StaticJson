@@ -38,7 +38,7 @@ public class TypeAdapterCodeGenerator {
             wrappedClassName = PrimitiveUtil.WRAPPED_TYPES[PrimitiveUtil.getPrimitiveIndex(varClass)];
         }
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_typeadapter.vm");
+        Template t = ve.getTemplate("inject_serialization.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("typeAdapterName", adapterClass.getName());
         ctx.put("varType", varClass.getName());

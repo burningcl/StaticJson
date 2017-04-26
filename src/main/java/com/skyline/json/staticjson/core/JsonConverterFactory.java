@@ -41,6 +41,12 @@ public class JsonConverterFactory {
      * @return
      */
     public static StaticJsonConverter get(Class<?> clazz) {
+
+        if (clazz == null || NO_CONVERTER_CLASSES.containsKey(clazz)) {
+            return null;
+        } else if (CONVERTER_CACHE.containsKey(clazz)) {
+            return CONVERTER_CACHE.get(clazz);
+        }
         synchronized (JsonConverterFactory.class) {
             if (clazz == null || NO_CONVERTER_CLASSES.containsKey(clazz)) {
                 return null;

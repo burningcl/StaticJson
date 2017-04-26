@@ -24,6 +24,7 @@ public abstract class BaseStaticJsonConverter implements StaticJsonConverter {
         try {
             stringWriter = new StringWriter();
             jsonWriter = new JsonWriter(stringWriter);
+            jsonWriter.setLenient(true);
             this.write(object, jsonWriter);
         } finally {
             try {

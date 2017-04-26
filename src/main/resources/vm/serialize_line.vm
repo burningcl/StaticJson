@@ -1,3 +1,4 @@
+
 #if ($needCheckNull)
 if (instance.${fieldName} != null) {
 #end

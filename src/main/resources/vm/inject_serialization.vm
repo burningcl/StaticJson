@@ -1,0 +1,9 @@
+try {
+    //System.out.println("doSerialization");
+    com.skyline.json.staticjson.core.JsonInterceptor.InterceptResult result =  com.skyline.json.staticjson.core.JsonInterceptor.doSerialization($${argIndex});
+    if(result.success){
+        return (String)result.obj;
+    }
+}catch (Throwable t){
+    t.printStackTrace();
+}
