@@ -108,18 +108,14 @@ public class ValueGetterGenerator {
             return "jsonWriter.value(" + primitiveValWriter(ctClass, varName, true) + ");";
         } else if (StringUtil.isString(ctClass)) {
             return "jsonWriter.value(" + varName + ".toString());";
+        } else if (ctClass.getName().equals(Object.class.getName())) {
+            //如果是Object，则交给Gson来处理
+            return "com.skyline.json.staticjson.core.util.GsonUtil.getGson().toJson(" + varName + ", Object.class, jsonWriter );";
+        } else if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
+            return "jsonWriter.value((" + varName + ".toString()));";
         } else {
-            if (ctClass.getName().equals(Object.class.getName())) {
-                //如果是Object，则交给Gson来处理
-                return "com.skyline.json.staticjson.core.util.GsonUtil.getGson().toJson(" + varName + ", Object.class, jsonWriter );";
-            } else {
-                if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
-                    return "jsonWriter.value((" + varName + ".toString()));";
-                } else {
-                    converterGenerator.gen(ctClass);
-                    return "new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().write(" + varName + ", jsonWriter);";
-                }
-            }
+            converterGenerator.gen(ctClass);
+            return "new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().write(" + varName + ", jsonWriter);";
         }
     }
 

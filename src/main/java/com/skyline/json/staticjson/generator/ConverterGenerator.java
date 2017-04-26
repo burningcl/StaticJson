@@ -2,6 +2,7 @@ package com.skyline.json.staticjson.generator;
 
 import com.skyline.json.staticjson.core.BaseStaticJsonConverter;
 import com.skyline.json.staticjson.core.StaticJsonConverter;
+import com.skyline.json.staticjson.core.StaticJsonObject;
 import com.skyline.json.staticjson.generator.deserialize.DeserializeMethodGenerator;
 import com.skyline.json.staticjson.generator.serialize.SerializeMethodGenerator;
 import com.skyline.json.staticjson.generator.util.ClassPoolHelper;
@@ -60,15 +61,20 @@ public class ConverterGenerator {
         if (converterClass == null) {
             converterClass = ctClass.makeNestedClass(nestedClassName, true);
         }
-        this.addInterface(converterClass);
+        this.addInterface(converterClass, StaticJsonConverter.class.getName());
         converterClass.setSuperclass(ClassPoolHelper.getClassPool().get(BaseStaticJsonConverter.class.getName()));
 
+        // 生成序列化方法
         SerializeMethodGenerator serializeMethodGenerator = new SerializeMethodGenerator(this);
         CtMethod serializeMethod = serializeMethodGenerator.gen(ctClass, converterClass);
         converterClass.addMethod(serializeMethod);
+        //生成反序列化方法
         DeserializeMethodGenerator deserializeMethodGenerator = new DeserializeMethodGenerator(this);
         CtMethod deserializeMethod = deserializeMethodGenerator.gen(ctClass, converterClass);
         converterClass.addMethod(deserializeMethod);
+
+        this.addInterface(ctClass, StaticJsonObject.class.getName());
+
         ctClass.writeFile(getOutPath());
         converterClass.writeFile(getOutPath());
     }
@@ -95,19 +101,20 @@ public class ConverterGenerator {
 
     /**
      * @param converterClass
+     * @param interfaceName
      * @throws NotFoundException
      * @throws CannotCompileException
      */
-    protected void addInterface(CtClass converterClass) throws NotFoundException, CannotCompileException {
+    protected void addInterface(CtClass converterClass, String interfaceName) throws NotFoundException, CannotCompileException {
         String[] interfaces = converterClass.getClassFile().getInterfaces();
         if (interfaces != null) {
             for (String interfaceStr : interfaces) {
-                if (interfaceStr.equals(StaticJsonConverter.class.getName())) {
+                if (interfaceStr.equals(interfaceName)) {
                     return;
                 }
             }
         }
-        converterClass.getClassFile().addInterface(StaticJsonConverter.class.getName());
+        converterClass.getClassFile().addInterface(interfaceName);
     }
 
 }
