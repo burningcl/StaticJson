@@ -3,6 +3,7 @@ package com.skyline.json.staticjson.performance;
 import com.google.gson.Gson;
 import com.skyline.json.staticjson.core.PrintLogger;
 import com.skyline.json.staticjson.core.StaticJsonConverter;
+import com.skyline.json.staticjson.core.annotation.JsonTarget;
 import com.skyline.json.staticjson.core.util.LoggerHolder;
 import com.skyline.json.staticjson.generator.ConverterGenerator;
 import com.skyline.json.staticjson.test.PrimitiveTest;
@@ -24,15 +25,52 @@ public class PrimitivePerformanceTest {
     static StaticJsonConverter staticJsonConverter;
     static Gson gson;
 
+    @JsonTarget
+    public static class TestClass {
+
+        public byte aByte1;
+
+        public Byte aByte;
+
+        public int anInt;
+
+        public Integer integer;
+
+        public short aShort;
+
+        public Short aShort1;
+
+        public long aLong;
+
+        public Long aLong1;
+
+        public float aFloat;
+
+        public Float aFloat1;
+
+        public double aDouble;
+
+        public Double aDouble1;
+
+        public char aChar;
+
+        public Character character;
+
+        public boolean aBoolean;
+
+        public Boolean aBoolean1;
+
+    }
+
     @BeforeClass
     public static void before() throws NotFoundException, ClassNotFoundException, CannotCompileException, BadBytecode, IOException, IllegalAccessException, InstantiationException {
         LoggerHolder.logger = new PrintLogger();
         ClassPool pool = ClassPool.getDefault();
         pool.appendSystemPath();
-        CtClass ctClass = pool.get(PrimitiveTest.TestClass.class.getName());
+        CtClass ctClass = pool.get(TestClass.class.getName());
         ConverterGenerator converter = new ConverterGenerator();
         converter.gen(ctClass);
-        staticJsonConverter = (StaticJsonConverter) Class.forName(PrimitiveTest.TestClass.class.getName() + "$JsonConverter").newInstance();
+        staticJsonConverter = (StaticJsonConverter) Class.forName(TestClass.class.getName() + "$JsonConverter").newInstance();
         // converter.inject(pool.get(JsonUtil.class.getName()));
         gson = new Gson();
     }
@@ -40,7 +78,7 @@ public class PrimitivePerformanceTest {
     @Test
     public void testSerialization() throws NoSuchFieldException, IllegalAccessException {
         int n = 100;
-        PrimitiveTest.TestClass obj = new PrimitiveTest.TestClass();
+        TestClass obj = new TestClass();
         obj.aByte1 = 1;
         obj.aByte = 2;
         obj.anInt = 3;
@@ -103,23 +141,23 @@ public class PrimitivePerformanceTest {
         long t1;
         long t2;
         int j;
-        gson.fromJson(json, PrimitiveTest.TestClass.class);
+        gson.fromJson(json, TestClass.class);
         long tt1 = System.nanoTime();
         for (int i = 0; i < n; i++) {
             t1 = System.nanoTime();
             for (j = 0; j < 10; j++) {
-                gson.fromJson(json, PrimitiveTest.TestClass.class);
+                gson.fromJson(json, TestClass.class);
             }
             t2 = System.nanoTime();
             cost1[i] = (t2 - t1) / 1000;
         }
         long tt2 = System.nanoTime();
-        JsonUtil.fromJson(json, PrimitiveTest.TestClass.class);
+        JsonUtil.fromJson(json, TestClass.class);
         long tt3 = System.nanoTime();
         for (int i = 0; i < n; i++) {
             t1 = System.nanoTime();
             for (j = 0; j < 10; j++) {
-                JsonUtil.fromJson(json, PrimitiveTest.TestClass.class);
+                JsonUtil.fromJson(json, TestClass.class);
             }
             t2 = System.nanoTime();
             cost2[i] = (t2 - t1) / 1000;

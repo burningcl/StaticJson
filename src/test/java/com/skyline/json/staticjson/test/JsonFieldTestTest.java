@@ -57,9 +57,6 @@ public class JsonFieldTestTest {
         @JsonField(typeAdapter = DeletedTypeAdapter.class)
         Boolean deleted;
 
-//        @JsonField(typeAdapter = DeletedTypeAdapter.class)
-//        boolean deletedPrimitive;
-
     }
 
     @JsonTarget

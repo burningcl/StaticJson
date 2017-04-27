@@ -23,13 +23,13 @@ public class ValueGetterGeneratorTest {
         LoggerHolder.logger = new PrintLogger();
     }
 
-//    @Test
-//    public void genTest4id() throws Exception {
-//        ClassPool pool = ClassPool.getDefault();
-//        CtClass ctClass = pool.get("com.skyline.json.staticjson.meta.Message");
-//        CtField id = ctClass.getField("id");
-//        System.out.println(new ValueGetterGenerator(new ConverterGenerator()).gen(id.getType(), "instance.id",null));
-//    }
+    @Test
+    public void genTest4id() throws Exception {
+        ClassPool pool = ClassPool.getDefault();
+        CtClass ctClass = pool.get("com.skyline.json.staticjson.meta.Message");
+        CtField id = ctClass.getField("id");
+        System.out.println(new ValueGetterGenerator(new ConverterGenerator()).gen(id.getType(), "instance.id",null));
+    }
 
 //    @Test
 //    public void genTest4deleted() throws Exception {
@@ -79,19 +79,4 @@ public class ValueGetterGeneratorTest {
 //        System.out.println(new ValueGetterGenerator(new ConverterGenerator()).gen(to.getType(), "instance.to", signatureAttribute));
 //    }
 
-    @Test
-    public void genTest4toMap() throws Exception {
-        ClassPool pool = ClassPool.getDefault();
-        CtClass ctClass = pool.get("com.skyline.json.staticjson.meta.Message");
-        CtField toMap = ctClass.getField("toMap");
-        SignatureAttribute signatureAttribute = null;
-
-        List<AttributeInfo> attributeInfoList = toMap.getFieldInfo().getAttributes();
-        if (attributeInfoList != null && attributeInfoList.size() > 0) {
-            for (AttributeInfo attributeInfo : attributeInfoList) {
-                signatureAttribute = (SignatureAttribute) attributeInfo;
-            }
-        }
-        System.out.println(new ValueGetterGenerator(new ConverterGenerator()).gen(toMap.getType(), "instance.toMap", signatureAttribute));
-    }
 }

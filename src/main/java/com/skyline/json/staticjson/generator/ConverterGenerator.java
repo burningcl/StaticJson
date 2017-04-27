@@ -1,17 +1,14 @@
 package com.skyline.json.staticjson.generator;
 
-import com.skyline.json.staticjson.core.BaseStaticJsonConverter;
-import com.skyline.json.staticjson.core.StaticJsonConverter;
-import com.skyline.json.staticjson.core.StaticJsonObject;
+import com.skyline.json.staticjson.core.*;
+import com.skyline.json.staticjson.core.util.LoggerHolder;
 import com.skyline.json.staticjson.generator.deserialize.DeserializeMethodGenerator;
 import com.skyline.json.staticjson.generator.serialize.SerializeMethodGenerator;
 import com.skyline.json.staticjson.generator.util.ClassPoolHelper;
-import javassist.CannotCompileException;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.BadBytecode;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +19,9 @@ import java.util.Set;
  */
 public class ConverterGenerator {
 
-    private String outputPath = null;
+    static final String TAG = "ConverterGenerator";
+
+    private String targetClassPath;
 
     /**
      * 已经处理的CtClass集合，以防止处理为一个CtClass生成JsonConverter
@@ -32,17 +31,71 @@ public class ConverterGenerator {
     JsonAspectInjector injector = new JsonAspectInjector();
 
     private String getOutputPath() {
-        if (outputPath == null) {
-            outputPath = ConverterGenerator.class.getClassLoader().getResource("").getPath();
+        if (targetClassPath == null) {
+            targetClassPath = ConverterGenerator.class.getClassLoader().getResource("").getPath();
         }
-        return outputPath;
+        return targetClassPath;
     }
 
     /**
-     * @param paths
+     * @param targetClassPath
+     * @param dependedClassPaths
      */
-    public void gen(String paths) {
+    public void gen(String targetClassPath, String... dependedClassPaths) {
+        LoggerHolder.logger = new PrintLogger();
+        try {
+            this.targetClassPath = targetClassPath;
+            ClassPool pool = ClassPoolHelper.getClassPool();
+            this.insertClassPath(pool, targetClassPath);
+            this.insertClassPath(pool, dependedClassPaths);
+        } catch (Exception e) {
+            LoggerHolder.logger.error(TAG, "gen, fail", e);
+        }
+    }
 
+    protected void insertClassPath(ClassPool pool, String... classpaths) throws NotFoundException {
+        if (classpaths != null && classpaths.length > 0) {
+            for (String classpath : classpaths) {
+                if (classpath.contains(":")) {
+                    this.insertClassPath(pool, classpath.split(":"));
+                } else {
+                    LoggerHolder.logger.info(TAG, "gen, insertClassPath, classpath: " + classpath);
+                    pool.insertClassPath(classpath);
+                }
+            }
+        }
+    }
+
+    protected void gen(File dir) throws NotFoundException, CannotCompileException, IOException, BadBytecode, ClassNotFoundException {
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            return;
+        }
+        File[] files = dir.listFiles();
+        if (files == null || files.length <= 0) {
+            return;
+        }
+        for (File file : files) {
+            if (file.isDirectory()) {
+                this.gen(file);
+            } else {
+                if (!file.getName().endsWith(".class")) {
+                    continue;
+                }
+
+                String filename = file.getAbsolutePath();
+                if (!filename.startsWith(targetClassPath)) {
+                    continue;
+                }
+
+                filename = filename.substring(targetClassPath.length() + 1);
+                filename = filename.replace(".class", "");
+                filename = filename.replace("/", ".");
+                filename = filename.replace("\\", ".");
+
+                CtClass srcClass = ClassPoolHelper.getClassPool().get(filename);
+                this.gen(srcClass);
+            }
+        }
     }
 
     /**
@@ -76,6 +129,8 @@ public class ConverterGenerator {
         converterClass.addMethod(deserializeMethod);
 
         this.addInterface(ctClass, StaticJsonObject.class.getName());
+
+        this.inject(ctClass);
 
         ctClass.writeFile(getOutputPath());
         converterClass.writeFile(getOutputPath());

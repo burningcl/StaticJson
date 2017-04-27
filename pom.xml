@@ -7,18 +7,6 @@
     <groupId>com.skyline.json</groupId>
     <artifactId>StaticJson</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
@@ -42,24 +30,87 @@
     <dependencies>
         <dependency>
             <groupId>javassist</groupId>
+            <scope>provided</scope>
             <artifactId>javassist</artifactId>
             <version>3.9.0.GA</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
+            <scope>provided</scope>
             <artifactId>gson</artifactId>
             <version>2.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
+            <scope>provided</scope>
             <artifactId>velocity</artifactId>
             <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
+            <scope>test</scope>
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${final.name}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>generator</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <final.name>static-json-generator</final.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>core</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <final.name>static-json-core</final.name>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>
+                                    **/com/skyline/json/staticjson/generator/**
+                                </exclude>
+                                <exclude>
+                                    **/vm/**
+                                </exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

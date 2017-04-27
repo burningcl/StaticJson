@@ -1,0 +1,7 @@
+${varWrappedType} ${varTmpName} = null;
+#if ($isPrimitive)
+    ${varTmpName} = ${varWrappedType}.valueOf(${varName});
+#else
+    ${varTmpName} = (${varType})(${varName});
+#end
+new ${typeAdapterName}().write(jsonWriter, ${varTmpName});
