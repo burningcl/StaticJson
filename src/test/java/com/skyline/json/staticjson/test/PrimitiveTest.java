@@ -39,38 +39,37 @@ public class PrimitiveTest {
     @JsonTarget
     public static class TestClass {
 
-        byte aByte1;
+        public byte aByte1;
 
-        Byte aByte;
+        public Byte aByte;
 
-        int anInt;
+        public int anInt;
 
-        Integer integer;
+        public Integer integer;
 
-        short aShort;
+        public short aShort;
 
-        Short aShort1;
+        public Short aShort1;
 
-        long aLong;
+        public long aLong;
 
-        Long aLong1;
+        public Long aLong1;
 
-        float aFloat;
+        public float aFloat;
 
-        Float aFloat1;
+        public Float aFloat1;
 
-        double aDouble;
+        public double aDouble;
 
-        Double aDouble1;
+        public Double aDouble1;
 
-        char aChar;
+        public char aChar;
 
-        Character character;
+        public Character character;
 
-        boolean aBoolean;
+        public boolean aBoolean;
 
-        Boolean aBoolean1;
-
+        public Boolean aBoolean1;
 
     }
 

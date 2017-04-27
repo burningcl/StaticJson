@@ -1,4 +1,4 @@
-package com.skyline.json.staticjson.test;
+package com.skyline.json.staticjson.performance;
 
 import com.google.gson.Gson;
 import com.skyline.json.staticjson.core.PrintLogger;
