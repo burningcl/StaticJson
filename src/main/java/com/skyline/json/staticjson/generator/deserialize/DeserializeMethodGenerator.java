@@ -58,7 +58,7 @@ public class DeserializeMethodGenerator {
         }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_method.vm");
+        Template t = ve.getTemplate("vm/deserialize_method.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("codeLines", codeLines);
         ctx.put("varType", targetClass.getName());

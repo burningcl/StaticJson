@@ -1,5 +1,6 @@
 package com.skyline.json.staticjson.generator.util;
 
+import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 
@@ -27,6 +28,19 @@ public final class AnnotationUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取Class上类型为annotationType的注解
+     *
+     * @param clazz
+     * @param annotationType
+     * @param <T>
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static <T> T getAnnotation4Class(CtClass clazz, Class<T> annotationType) throws ClassNotFoundException {
+        return getAnnotation(clazz.getAnnotations(), annotationType);
     }
 
     /**

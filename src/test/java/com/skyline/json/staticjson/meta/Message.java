@@ -1,12 +1,14 @@
 package com.skyline.json.staticjson.meta;
 
 import com.skyline.json.staticjson.core.annotation.JsonField;
+import com.skyline.json.staticjson.core.annotation.JsonTarget;
 
 import java.util.*;
 
 /**
  * Created by chenliang on 2017/4/10.
  */
+@JsonTarget
 public class Message {
 
     private static final String LOG_TAG = "Message";
@@ -101,7 +103,7 @@ public class Message {
         Message message = (Message) o;
 
         if (id != message.id) return false;
-       // if (!deleted.equals(message.deleted)) return false;
+        // if (!deleted.equals(message.deleted)) return false;
         if (!subject.equals(message.subject)) return false;
         if (!content.equals(message.content)) return false;
         if (!from.equals(message.from)) return false;

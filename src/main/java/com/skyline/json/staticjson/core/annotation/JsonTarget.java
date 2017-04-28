@@ -11,4 +11,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface JsonTarget {
+
+    Type type() default Type.CLASS;
+
+    enum Type {
+        CLASS,
+        UTIL
+    }
 }

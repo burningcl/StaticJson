@@ -104,7 +104,7 @@ public class SerializeLineGenerator {
         }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_line.vm");
+        Template t = ve.getTemplate("vm/serialize_line.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("needCheckNull", needCheckNull);
         ctx.put("key", jsonFieldName);

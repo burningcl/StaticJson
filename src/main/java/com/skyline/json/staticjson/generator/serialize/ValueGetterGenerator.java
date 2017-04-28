@@ -1,5 +1,6 @@
 package com.skyline.json.staticjson.generator.serialize;
 
+import com.skyline.json.staticjson.core.JsonConverterFactory;
 import com.skyline.json.staticjson.generator.ConverterGenerator;
 import com.skyline.json.staticjson.core.util.LoggerHolder;
 import com.skyline.json.staticjson.core.exception.TypeMissException;
@@ -114,8 +115,8 @@ public class ValueGetterGenerator {
         } else if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
             return "jsonWriter.value((" + varName + ".toString()));";
         } else {
-            converterGenerator.gen(ctClass);
-            return "new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().write(" + varName + ", jsonWriter);";
+            converterGenerator.genConverter(ctClass);
+            return JsonConverterFactory.class.getName()+".get(" + ctClass.getName() + ".class).write(" + varName + ", jsonWriter);";
         }
     }
 
@@ -157,7 +158,7 @@ public class ValueGetterGenerator {
         String valueGetter = this.genImpl(componentType, varName + "[" + indexName + "]", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_array_subline.vm");
+        Template t = ve.getTemplate("vm/serialize_array_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("indexName", indexName);
         ctx.put("varName", varName);
@@ -191,7 +192,7 @@ public class ValueGetterGenerator {
         String valueGetter = this.genImpl(itemTypeClass, varNextName, GenUtils.getSubTypeArguments(itemType));
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_iterable_subline.vm");
+        Template t = ve.getTemplate("vm/serialize_iterable_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("iteratorName", iteratorName);
         ctx.put("varName", varName);
@@ -232,7 +233,7 @@ public class ValueGetterGenerator {
         String valueGetter = this.genImpl(ctClass, varName + ".get(key)", null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_map_subline.vm");
+        Template t = ve.getTemplate("vm/serialize_map_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("keyType", keyTypeName);
         ctx.put("iteratorName", iteratorName);

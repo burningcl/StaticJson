@@ -97,7 +97,7 @@ public class DeserializeLineGenerator {
         }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_line.vm");
+        Template t = ve.getTemplate("vm/deserialize_line.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("fieldName", jsonFieldName);
         ctx.put("valueSetter", valueSetter);

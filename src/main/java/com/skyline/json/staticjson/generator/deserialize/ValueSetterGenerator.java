@@ -1,5 +1,6 @@
 package com.skyline.json.staticjson.generator.deserialize;
 
+import com.skyline.json.staticjson.core.JsonConverterFactory;
 import com.skyline.json.staticjson.generator.ConverterGenerator;
 import com.skyline.json.staticjson.core.util.LoggerHolder;
 import com.skyline.json.staticjson.core.exception.TypeMissException;
@@ -115,8 +116,8 @@ public class ValueSetterGenerator {
             } else if (ctClass.isEnum()) {
                 return this.genEnumValueSetter(ctClass, varName, jsonTokenName);
             } else {
-                converterGenerator.gen(ctClass);
-                return varName + " = (" + ctClass.getName() + ")(new " + GenUtils.getJsonConverterName(ctClass.getName()) + "().read(jsonReader));";
+                converterGenerator.genConverter(ctClass);
+                return varName + " = (" + ctClass.getName() + ")( " + JsonConverterFactory.class.getName()+".get(" + ctClass.getName() + ".class).read(jsonReader));";
             }
         }
     }
@@ -132,7 +133,7 @@ public class ValueSetterGenerator {
         String methodName = PrimitiveUtil.JSON_GET_METHOD[index];
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_primitive_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_primitive_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("varName", varName);
         ctx.put("varType", ctClass.getName());
@@ -177,7 +178,7 @@ public class ValueSetterGenerator {
      */
     public String genStringValueSetter(CtClass ctClass, String varName, String jsonTokenName) {
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_string_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_string_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("varName", varName);
         ctx.put("varType", ctClass.getName());
@@ -195,7 +196,7 @@ public class ValueSetterGenerator {
      */
     public String genEnumValueSetter(CtClass ctClass, String varName, String jsonTokenName) {
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_enum_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_enum_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("varName", varName);
         ctx.put("jsonTokenName", jsonTokenName);
@@ -231,7 +232,7 @@ public class ValueSetterGenerator {
         String valueSetter = this.genImpl(componentType, itemName, subTokenName, null);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_array_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_array_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("jsonTokenName", jsonTokenName);
         ctx.put("listName", listName);
@@ -275,7 +276,7 @@ public class ValueSetterGenerator {
         String valueSetter = this.genImpl(elementTypeClass, itemName, subTokenName, subTypeArguments);
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_iterable_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_iterable_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("jsonTokenName", jsonTokenName);
         ctx.put("varType", iterableType.getName());
@@ -323,7 +324,7 @@ public class ValueSetterGenerator {
         String mapTypeName = mapType.getName();
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("deserialize_map_subline.vm");
+        Template t = ve.getTemplate("vm/deserialize_map_subline.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("jsonTokenName", jsonTokenName);
         ctx.put("varType", mapTypeName);

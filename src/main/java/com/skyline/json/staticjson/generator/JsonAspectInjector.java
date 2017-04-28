@@ -73,7 +73,7 @@ public class JsonAspectInjector {
         }
         LoggerHolder.logger.debug(TAG, "injectSerialization, ctMethod: " + ctMethod.getName() + ", argIndex: " + argIndex);
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("inject_serialization.vm");
+        Template t = ve.getTemplate("vm/inject_serialization.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("argIndex", argIndex + 1);
         StringWriter sw = new StringWriter();
@@ -104,7 +104,7 @@ public class JsonAspectInjector {
         }
         LoggerHolder.logger.debug(TAG, "injectDeserialization, ctMethod: " + ctMethod.getName() + ", jsonIndex: " + jsonIndex + ", classIndex: " + classIndex);
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("inject_deserialization.vm");
+        Template t = ve.getTemplate("vm/inject_deserialization.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("jsonIndex", jsonIndex + 1);
         ctx.put("classIndex", classIndex + 1);

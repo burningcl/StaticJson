@@ -58,7 +58,7 @@ public class SerializeMethodGenerator {
         }
 
         VelocityEngine ve = VelocityHelper.getVelocityEngine();
-        Template t = ve.getTemplate("serialize_method.vm");
+        Template t = ve.getTemplate("vm/serialize_method.vm");
         VelocityContext ctx = new VelocityContext();
         ctx.put("codeLines", codeLines);
         ctx.put("instanceType", targetClass.getName());

@@ -1,10 +1,13 @@
 package com.skyline.json.staticjson.generator;
 
 import com.skyline.json.staticjson.core.*;
+import com.skyline.json.staticjson.core.annotation.JsonTarget;
 import com.skyline.json.staticjson.core.util.LoggerHolder;
 import com.skyline.json.staticjson.generator.deserialize.DeserializeMethodGenerator;
 import com.skyline.json.staticjson.generator.serialize.SerializeMethodGenerator;
+import com.skyline.json.staticjson.generator.util.AnnotationUtil;
 import com.skyline.json.staticjson.generator.util.ClassPoolHelper;
+import com.skyline.json.staticjson.generator.util.VelocityHelper;
 import javassist.*;
 import javassist.bytecode.BadBytecode;
 
@@ -42,12 +45,14 @@ public class ConverterGenerator {
      * @param dependedClassPaths
      */
     public void gen(String targetClassPath, String... dependedClassPaths) {
+        VelocityHelper.LOAD_FROM_CLASS_PATH = false;
         LoggerHolder.logger = new PrintLogger();
         try {
             this.targetClassPath = targetClassPath;
             ClassPool pool = ClassPoolHelper.getClassPool();
             this.insertClassPath(pool, targetClassPath);
             this.insertClassPath(pool, dependedClassPaths);
+            this.gen(new File(targetClassPath));
         } catch (Exception e) {
             LoggerHolder.logger.error(TAG, "gen, fail", e);
         }
@@ -59,7 +64,7 @@ public class ConverterGenerator {
                 if (classpath.contains(":")) {
                     this.insertClassPath(pool, classpath.split(":"));
                 } else {
-                    LoggerHolder.logger.info(TAG, "gen, insertClassPath, classpath: " + classpath);
+                    LoggerHolder.logger.warn(TAG, "gen, insertClassPath, classpath: " + classpath);
                     pool.insertClassPath(classpath);
                 }
             }
@@ -70,6 +75,7 @@ public class ConverterGenerator {
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             return;
         }
+        LoggerHolder.logger.warn(TAG, "gen, file: " + dir);
         File[] files = dir.listFiles();
         if (files == null || files.length <= 0) {
             return;
@@ -87,6 +93,7 @@ public class ConverterGenerator {
                     continue;
                 }
 
+                LoggerHolder.logger.warn(TAG, "gen, class: " + filename);
                 filename = filename.substring(targetClassPath.length() + 1);
                 filename = filename.replace(".class", "");
                 filename = filename.replace("/", ".");
@@ -107,15 +114,30 @@ public class ConverterGenerator {
      * @throws ClassNotFoundException
      */
     public void gen(CtClass ctClass) throws NotFoundException, CannotCompileException, IOException, BadBytecode, ClassNotFoundException {
+
+        if (AnnotationUtil.getAnnotation4Class(ctClass, JsonTarget.class) != null) {
+            this.genConverter(ctClass);
+        } else {
+            this.inject(ctClass);
+        }
+    }
+
+    public void genConverter(CtClass ctClass) throws NotFoundException, CannotCompileException, IOException, BadBytecode, ClassNotFoundException {
+
         if (processedSet.contains(ctClass)) {
             return;
         }
-        processedSet.add(ctClass);
+        if (ctClass.isFrozen()) {
+            ctClass.defrost();
+        }
+
+        ctClass.getClassFile().setMajorVersion(51);
         String nestedClassName = "JsonConverter";
         CtClass converterClass = findNestedClass(ctClass, nestedClassName);
         if (converterClass == null) {
             converterClass = ctClass.makeNestedClass(nestedClassName, true);
         }
+        converterClass.getClassFile().setMajorVersion(51);
         this.addInterface(converterClass, StaticJsonConverter.class.getName());
         converterClass.setSuperclass(ClassPoolHelper.getClassPool().get(BaseStaticJsonConverter.class.getName()));
 
@@ -130,13 +152,21 @@ public class ConverterGenerator {
 
         this.addInterface(ctClass, StaticJsonObject.class.getName());
 
-        this.inject(ctClass);
-
         ctClass.writeFile(getOutputPath());
         converterClass.writeFile(getOutputPath());
+        processedSet.add(ctClass);
+        processedSet.add(converterClass);
     }
 
     public void inject(CtClass ctClass) throws CannotCompileException, ClassNotFoundException, IOException {
+        if (processedSet.contains(ctClass)) {
+            return;
+        }
+        if (ctClass.isFrozen()) {
+            ctClass.defrost();
+        }
+        processedSet.add(ctClass);
+        ctClass.getClassFile().setMajorVersion(51);
         if (injector.inject(ctClass)) {
             ctClass.writeFile(getOutputPath());
         }
