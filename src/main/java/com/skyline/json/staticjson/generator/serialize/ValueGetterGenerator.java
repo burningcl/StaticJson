@@ -113,10 +113,10 @@ public class ValueGetterGenerator {
             //如果是Object，则交给Gson来处理
             return "com.skyline.json.staticjson.core.util.GsonUtil.getGson().toJson(" + varName + ", Object.class, jsonWriter );";
         } else if (ctClass.getSuperclass().getName().equals(Enum.class.getName())) {
-            return "jsonWriter.value((" + varName + ".toString()));";
+            return "jsonWriter.value(" + varName + ".toString());";
         } else {
             converterGenerator.genConverter(ctClass);
-            return JsonConverterFactory.class.getName()+".get(" + ctClass.getName() + ".class).write(" + varName + ", jsonWriter);";
+            return JsonConverterFactory.class.getName() + ".get(" + ctClass.getName() + ".class).write(" + varName + ", jsonWriter);";
         }
     }
 
@@ -128,13 +128,13 @@ public class ValueGetterGenerator {
             case 1:
             case 2:
             case 3:
-                return wrapped ? varName : "(long)" + varName;
+                return wrapped ? "(" + ctClass.getName() + ")" + varName : "(long)" + varName;
             case 4:
-                return wrapped ? varName : "Double.valueOf(String.valueOf(" + varName + "))";
+                return wrapped ? "(" + ctClass.getName() + ")" + varName : "Double.valueOf(String.valueOf(" + varName + "))";
             case 5:
-                return varName;
+                return "(" + ctClass.getName() + ")" + varName;
             case 6:
-                return varName;
+                return "(" + ctClass.getName() + ")" + varName;
             case 7:
                 return "String.valueOf(" + varName + ")";
             default:

@@ -130,6 +130,7 @@ public class ConverterGenerator {
         if (ctClass.isFrozen()) {
             ctClass.defrost();
         }
+        processedSet.add(ctClass);
 
         ctClass.getClassFile().setMajorVersion(51);
         String nestedClassName = "JsonConverter";
@@ -137,6 +138,10 @@ public class ConverterGenerator {
         if (converterClass == null) {
             converterClass = ctClass.makeNestedClass(nestedClassName, true);
         }
+        if(converterClass.isFrozen()){
+            converterClass.defrost();
+        }
+        processedSet.add(converterClass);
         converterClass.getClassFile().setMajorVersion(51);
         this.addInterface(converterClass, StaticJsonConverter.class.getName());
         converterClass.setSuperclass(ClassPoolHelper.getClassPool().get(BaseStaticJsonConverter.class.getName()));
@@ -154,8 +159,7 @@ public class ConverterGenerator {
 
         ctClass.writeFile(getOutputPath());
         converterClass.writeFile(getOutputPath());
-        processedSet.add(ctClass);
-        processedSet.add(converterClass);
+
     }
 
     public void inject(CtClass ctClass) throws CannotCompileException, ClassNotFoundException, IOException {

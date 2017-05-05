@@ -1,6 +1,3 @@
-if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BEGIN_OBJECT))) {
-    throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
-}
 ${varName} = new ${varType}();
 jsonReader.beginObject();
 while (jsonReader.hasNext()) {
@@ -13,7 +10,7 @@ while (jsonReader.hasNext()) {
         ${stringReader} = new java.io.StringReader(${jsonReader}.nextName());
         jsonReader = new com.google.gson.stream.JsonReader(${stringReader});
         com.google.gson.stream.JsonToken ${keyTokenName} = jsonReader.peek();
-        if(!${keyTokenName}.equals(com.google.gson.stream.JsonToken.NULL)){
+        if(${keyTokenName} != com.google.gson.stream.JsonToken.NULL){
             ${keySetter}
         }else{
             jsonReader.nextNull();
@@ -33,7 +30,7 @@ while (jsonReader.hasNext()) {
 
     ${valueType} ${valueName} = null;
     com.google.gson.stream.JsonToken ${valueTokenName} = jsonReader.peek();
-    if(!${valueTokenName}.equals(com.google.gson.stream.JsonToken.NULL)){
+    if(${valueTokenName} != com.google.gson.stream.JsonToken.NULL){
         ${valueSetter}
     }else{
         jsonReader.nextNull();

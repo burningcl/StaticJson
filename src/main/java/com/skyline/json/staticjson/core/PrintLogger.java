@@ -20,10 +20,11 @@ public class PrintLogger implements Logger {
     public void error(String tag, String msg, Exception e) {
         System.out.println("ERROR: " + tag + ", " + msg);
         if (e != null) {
+            System.out.println("ERROR: " + tag + ", " + e.getClass());
             System.out.println("ERROR: " + tag + ", " + e.toString());
             System.out.println("ERROR: " + tag + ", " + e.getMessage());
+            System.out.println("ERROR: " + tag + ", " + e.getLocalizedMessage());
             e.printStackTrace();
-
         }
     }
 }

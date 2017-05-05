@@ -65,7 +65,7 @@ public class SerializeMethodGenerator {
         StringWriter sw = new StringWriter();
         t.merge(ctx, sw);
         String methodBody = sw.toString();
-        LoggerHolder.logger.info(TAG, "gen, success, methodBody: \n" + methodBody);
+        LoggerHolder.logger.error(TAG, "gen, success, methodBody: \n" + methodBody,null);
 
         CtMethod writeMethod = null;
         try {

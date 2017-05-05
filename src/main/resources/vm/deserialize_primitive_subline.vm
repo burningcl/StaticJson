@@ -1,6 +1,6 @@
 #*
 if (key.equals("id")) {
-    if (jsonToken.equals(JsonToken.NULL)) {
+    if (jsonToken == JsonToken.NULL) {
         continue;
     } else if (!(jsonToken.equals(JsonToken.BOOLEAN) || jsonToken.equals(JsonToken.NUMBER))) {
         throw new TypeNotMatchedException("id", jsonToken.name(), "lang");
@@ -10,9 +10,4 @@ if (key.equals("id")) {
 }
 *#
 
-#*
-if (!(${jsonTokenName}.equals(com.google.gson.stream.JsonToken.BOOLEAN) || ${jsonTokenName}.equals(com.google.gson.stream.JsonToken.NUMBER) || ${jsonTokenName}.equals(com.google.gson.stream.JsonToken.STRING))) {
-   throw new com.skyline.json.staticjson.core.exception.TypeNotMatchedException("${varName}", ${jsonTokenName}.name(), "${varType}");
-}
-*#
 ${varName} = ${valReader};

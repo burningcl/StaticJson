@@ -8,7 +8,7 @@ public java.lang.Object read(com.google.gson.stream.JsonReader jsonReader) {
         String key = jsonReader.nextName();
         com.google.gson.stream.JsonToken jsonToken = jsonReader.peek();
 
-        if (jsonToken.equals(com.google.gson.stream.JsonToken.NULL)) {
+        if (jsonToken == com.google.gson.stream.JsonToken.NULL) {
             jsonReader.nextNull();
             continue;
         }

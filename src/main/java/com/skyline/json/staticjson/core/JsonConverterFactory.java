@@ -44,19 +44,23 @@ public class JsonConverterFactory {
 
         if (clazz == null || NO_CONVERTER_CLASSES.containsKey(clazz)) {
             return null;
-        } else if (CONVERTER_CACHE.containsKey(clazz)) {
-            return CONVERTER_CACHE.get(clazz);
+        }
+        StaticJsonConverter converter = CONVERTER_CACHE.get(clazz);
+        if (converter != null) {
+            return converter;
         }
         synchronized (JsonConverterFactory.class) {
             if (clazz == null || NO_CONVERTER_CLASSES.containsKey(clazz)) {
                 return null;
-            } else if (CONVERTER_CACHE.containsKey(clazz)) {
-                return CONVERTER_CACHE.get(clazz);
+            }
+            converter = CONVERTER_CACHE.get(clazz);
+            if (converter != null) {
+                return converter;
             }
             try {
                 String converterClassName = clazz.getName() + "$JsonConverter";
                 Class<? extends StaticJsonConverter> converterClass = (Class<? extends StaticJsonConverter>) Class.forName(converterClassName);
-                StaticJsonConverter converter = converterClass.newInstance();
+                converter = converterClass.newInstance();
                 CONVERTER_CACHE.put(clazz, converter);
                 return converter;
             } catch (Exception e) {
